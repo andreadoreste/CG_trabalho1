@@ -19,6 +19,9 @@ from geometry import *
 colors = [(0.0,1.0,0.0,1.0),(0.0,0.0,1.0,1.0),(0.0,1.0,1.0,1.0),(1.0,1.0,1.0,1.0),(1.0,1.0,0.0,1.0),(1.0,0.0,0.0,1.0)]
 
 def opened_cube(vertex,faces,initial_face, ang=90):
+	
+	#glLoadIdentity()
+
 	#<DFS>
 
 	#depth_fs returns an array
@@ -42,7 +45,7 @@ def opened_cube(vertex,faces,initial_face, ang=90):
 	#Start drawing the faces
 	face_i = path[0]	
 	for face in DFS_faces_vector:
-		glPushMatrix()
+		#glPushMatrix()
 		index = DFS_faces_vector.index(face)
 		
 		#Testing with only two faces
@@ -117,23 +120,29 @@ def opened_cube(vertex,faces,initial_face, ang=90):
 				ang = -ang
 			#print "ang: " + str(ang)
 			#print "f2: " + str(pair[1])
-			tr = translateAndRotate(-ang,point_1,axis)
+			tr = translateAndRotate(ang,point_1,axis)
 			faces_matrix[face_i] = faces_matrix[face_prev]*tr
+			
+			print tr
+			glMultMatrixf(tr)
+			#glMultMatrixf(faces_matrix[face_i])
 		#glLoadIdentity()	
 		print "faces_matrix[face_i]"
 		print faces_matrix[face_i]
-
-		glMultMatrixf(faces_matrix[face_i])
+		
+		#glColor4fv(colors[index])
+		#glMultMatrixf(faces_matrix[face_i])
 		glColor4fv(colors[index])
 
 		#desenha
-		glPopMatrix()
+		#glPopMatrix()
 		glBegin(GL_QUADS)
 		print "start drawing"
 
 		for vert in face:
 			glVertex3fv(vertex[vert])
 			print vertex[vert]
+		print "end drawing"
 		glEnd()
 		#glPopMatrix()
 
