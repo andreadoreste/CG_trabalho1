@@ -149,14 +149,14 @@ def Draw ():
 	#Torus(0.30,1.00);
 	#Andrea comecou a modificar aqui
 	glColor4f(1.0,1.0,1.0,0.0)
-<<<<<<< HEAD
+
 	#cube(vertex,faces)
 	opened_cube(vertex,faces,3)
 	#0 - ok
 	#1 - ok
-=======
-	cube(vertex,faces)
->>>>>>> origin/master
+
+	#cube(vertex,faces)
+
 	#tetrahedon(vertex,faces)
 
 	glPopMatrix();													# // NEW: Unapply Dynamic Transform

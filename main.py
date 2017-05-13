@@ -35,16 +35,16 @@ def cube(vertex,faces):
                 glNormal3fv(normal_vector)
 		for vert in face:
 			glVertex3fv(vertex[vert])
-<<<<<<< HEAD
+
 #			
-			print (vertex[vert])
-        glEnd()
-=======
+#			print (vertex[vert])
+                glEnd()
+
 #		
-                glEnd()	
+            	
 	#		print (vertex[vert])
 	#glEnd()
->>>>>>> origin/master
+
 	return
 
 
