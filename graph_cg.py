@@ -92,7 +92,7 @@ def depht_fs(graph,root):
 #for i in [0,1,2,3,4,5]:
 	#print depht_fs(graph_cube,i)
 
-r = depht_fs(graph_octahedron,1)
+r = depht_fs(graph_cube,3)
 print r
 #result= create_face_vector(faces,r[0])
 #print result

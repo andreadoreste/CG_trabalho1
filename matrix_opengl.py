@@ -21,14 +21,13 @@ def translateAndRotate(ang, p, axis):
 	#print p
 	#print axis
 	glPushMatrix()
-	#glLoadIdentity()
+	glLoadIdentity()
 	glTranslate(px,py,pz)
 	glRotate(ang,axisX,axisY,axisZ)
 	glTranslate(-px,-py,-pz)
 	T = glGetDoublev(GL_MODELVIEW_MATRIX)
-	print T
 	glPopMatrix()
-
+	return T
 
 def difference(arrayA,arrayB):
 	arrayRx = arrayA[0]-arrayB[0]

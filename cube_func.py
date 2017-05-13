@@ -27,7 +27,9 @@ def opened_cube(vertex,faces,initial_face, ang=90):
 	DFS = depht_fs(graph_cube,initial_face)
 
 	#faces vertex from the DFS path
-	DFS_faces_vector = create_face_vector(faces,DFS[0])
+	path = DFS[0]
+	print path
+	DFS_faces_vector = create_face_vector(faces,path)
 	dfs_parents = DFS[1]
 
 	#</DFS>
@@ -38,11 +40,11 @@ def opened_cube(vertex,faces,initial_face, ang=90):
 		faces_matrix.append(identity(4))
 
 	#Start drawing the faces
-		
+	face_i = path[0]	
 	for face in DFS_faces_vector:
-
+		glPushMatrix()
 		index = DFS_faces_vector.index(face)
-
+		
 		#Testing with only two faces
 		#if index>=2:
 		#	break
@@ -52,6 +54,9 @@ def opened_cube(vertex,faces,initial_face, ang=90):
 			#Array pair = [face n-1, face n]
 			pair = dfs_parents.pop(0)
 
+			#face being modificated
+			face_i = pair[1]
+			face_prev = pair[0]
 			#Array f1,f2 = faces[n]=[p1, p2, p3, p4]
 			# Each p is a vertex of the face	
 			f1 = faces[pair[0]]
@@ -110,14 +115,19 @@ def opened_cube(vertex,faces,initial_face, ang=90):
 			print teste
 			if teste<0:
 				ang = -ang
-			print "ang: " + str(ang)
-
-			translateAndRotate(ang,point_1,axis)
+			#print "ang: " + str(ang)
+			#print "f2: " + str(pair[1])
+			tr = translateAndRotate(-ang,point_1,axis)
+			faces_matrix[face_i] = faces_matrix[face_prev]*tr
 		#glLoadIdentity()	
+		print "faces_matrix[face_i]"
+		print faces_matrix[face_i]
+
+		glMultMatrixf(faces_matrix[face_i])
 		glColor4fv(colors[index])
 
 		#desenha
-
+		glPopMatrix()
 		glBegin(GL_QUADS)
 		print "start drawing"
 
@@ -125,6 +135,7 @@ def opened_cube(vertex,faces,initial_face, ang=90):
 			glVertex3fv(vertex[vert])
 			print vertex[vert]
 		glEnd()
+		#glPopMatrix()
 
 
 def main():
