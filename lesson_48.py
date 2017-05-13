@@ -6,7 +6,8 @@ import copy
 from math import cos, sin
 
 from numpy import *
-from main import *
+#from main import *
+from cube_func import *
 from glut_loader import loader
 
 from ArcBall import * 				# ArcBallT and this tutorials set of points/vectors/matrix types

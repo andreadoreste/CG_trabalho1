@@ -9,7 +9,7 @@ class Point(object):
 		self.z = z
 
 
-'''def translateAndRotate(ang, p, axis):
+def translateAndRotate(ang, p, axis):
 	px = p[0]
 	py = p[1]
 	pz = p[2]
@@ -18,15 +18,17 @@ class Point(object):
 	axisY = axis[1]
 	axisZ = axis[2]
 
-	print p
-	print axis
-	#glPushMatrix()
+	#print p
+	#print axis
+	glPushMatrix()
 	#glLoadIdentity()
 	glTranslate(px,py,pz)
 	glRotate(ang,axisX,axisY,axisZ)
 	glTranslate(-px,-py,-pz)
-	#glPopMatrix()
-'''
+	T = glGetDoublev(GL_MODELVIEW_MATRIX)
+	print T
+	glPopMatrix()
+
 
 def difference(arrayA,arrayB):
 	arrayRx = arrayA[0]-arrayB[0]

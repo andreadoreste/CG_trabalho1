@@ -115,7 +115,7 @@ def DrawGLScene(): #def display
         #face 1: 
         glColor4fv(colors[0])
         opened_cube(vertex,faces,3)
-        '''glBegin(GL_QUADS)
+        glBegin(GL_QUADS)
         glVertex3fv(vertex[5])
         glVertex3fv(vertex[4])
         glVertex3fv(vertex[7])
@@ -139,7 +139,7 @@ def DrawGLScene(): #def display
         #print v2
         
         #face 2:
-        
+        glLoadIdentity()
         axis = difference(v1,v2)
         axis= Point(axis[0],axis[1],axis[2])
         
@@ -164,13 +164,13 @@ def DrawGLScene(): #def display
 #        v1 = Point(vertex[1][0],vertex[1][1],vertex[1][2])
 #        v5 = Point(vertex[5][0],vertex[5][1],vertex[5][2])
         
-        t6 = translateAndTransform(t,v6)
-        print "t6"
-        print t6
+        #t6 = translateAndTransform(t,v6)
+        #print "t6"
+        #print t6
 
-        t2 = translateAndTransform(t,v2)
-        t1 = translateAndTransform(t,v1)
-        t5 = translateAndTransform(t,v5) 
+        #t2 = translateAndTransform(t,v2)
+        #t1 = translateAndTransform(t,v1)
+        #t5 = translateAndTransform(t,v5) 
         
         #t = faces_matrix[2]*t
         tr = faces_matrix[0]*t
@@ -179,7 +179,12 @@ def DrawGLScene(): #def display
         #print "TR"
         print tr
         #print faces_matrix[0]
-        glMultMatrixf(tr)
+        glMultMatrixf(tr.view(type=np.ndarray))
+
+        glPushMatrix()
+        glPopMatrix()
+        print "T"
+        T = glGetDoublev(GL_MODELVIEW_MATRIX)
         #blue
         #desenha
         
@@ -326,7 +331,7 @@ def DrawGLScene(): #def display
         glPopMatrix()
         #glColor4f(1.0,0.0,0.0,1.0)
         #opened_cube(vertex,faces,1)
-        '''  
+          
                  
         glPopMatrix()
         glutSwapBuffers()
