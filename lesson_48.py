@@ -152,7 +152,7 @@ def Draw ():
 	glColor4f(1.0,1.0,1.0,0.0)
 
 	#cube(vertex,faces)
-	opened_cube(vertex,faces,3)
+	opened_cube(vertex,faces,1)
 	#0 - ok
 	#1 - ok
 

@@ -13,7 +13,7 @@ from normal_vector import *
 from glut_loader import *
 from matrix_opengl import *
 from graph_cg import *
-from geometry import *
+#from geometry import *
 #from matrix import *
 
 colors = [(0.0,1.0,0.0,1.0),(0.0,0.0,1.0,1.0),(0.0,1.0,1.0,1.0),(1.0,1.0,1.0,1.0),(1.0,1.0,0.0,1.0),(1.0,0.0,0.0,1.0)]
@@ -34,20 +34,25 @@ def opened_cube(vertex,faces,initial_face, ang=90):
 	print path
 	DFS_faces_vector = create_face_vector(faces,path)
 	dfs_parents = DFS[1]
+	print dfs
 
 	#</DFS>
 
 	#Create an array with an identity matrix for each face
 	faces_matrix = []
 	for i in range(6):
-		faces_matrix.append(identity(4))
+		faces_matrix.append(matrix(identity(4)))
 
 	#Start drawing the faces
 	face_i = path[0]	
 	for face in DFS_faces_vector:
-		#glPushMatrix()
+		
+		glPushMatrix()	
+		
 		index = DFS_faces_vector.index(face)
 		
+		glColor4fv(colors[index])
+
 		#Testing with only two faces
 		#if index>=2:
 		#	break
@@ -116,26 +121,38 @@ def opened_cube(vertex,faces,initial_face, ang=90):
 
 			teste =dot(edge_vector,cross_product)
 			print teste
-			if teste<0:
-				ang = -ang
+			#if teste<0:
+			#	ang = -ang
 			#print "ang: " + str(ang)
 			#print "f2: " + str(pair[1])
 			tr = translateAndRotate(ang,point_1,axis)
-			faces_matrix[face_i] = faces_matrix[face_prev]*tr
-			
-			print tr
-			glMultMatrixf(tr)
+			tr = matrix(tr)
+			print 'type tr'
+			print type(tr)
+			print 'type m'
+			print type(m)
+			#comb = tr*m
+			comb = tr*faces_matrix[face_prev]
+			print "comb"
+			print comb
+			faces_matrix[face_i] = comb
+			#print "tr"
+			#print tr
+			#glMultMatrixf(tr.view(type=ndarray))
+			glMultMatrixf(comb.view(type=ndarray))
 			#glMultMatrixf(faces_matrix[face_i])
 		#glLoadIdentity()	
-		print "faces_matrix[face_i]"
-		print faces_matrix[face_i]
+		
+		
 		
 		#glColor4fv(colors[index])
 		#glMultMatrixf(faces_matrix[face_i])
-		glColor4fv(colors[index])
+		
+		#glColor4fv(colors[index])
 
 		#desenha
 		#glPopMatrix()
+		glPushMatrix()
 		glBegin(GL_QUADS)
 		print "start drawing"
 
@@ -143,10 +160,21 @@ def opened_cube(vertex,faces,initial_face, ang=90):
 			glVertex3fv(vertex[vert])
 			print vertex[vert]
 		print "end drawing"
+		
 		glEnd()
-		#glPopMatrix()
+		glPopMatrix()
+		m = glGetDoublev(GL_MODELVIEW_MATRIX)
+		m = matrix(m)
+		
+		
+		print 'face_i: ' + str(face_i)
+		print "m"
+		print m
+		#faces_matrix[face_i] = m
 
-
+		glPopMatrix()
+	#print 'faces_matrix'
+	#print faces_matrix	
 def main():
 	results = loader('cube.ply')
 	opened_cube(results[2],results[3],3)
