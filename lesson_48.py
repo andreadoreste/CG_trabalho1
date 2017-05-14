@@ -34,6 +34,10 @@ g_quadratic = None
 
 global results
 
+global zoom
+
+zoom = 0
+
 # Andrea mexeu
 #results = loader('cube.ply')
 results = loader('tetrahedron.ply')
@@ -113,6 +117,8 @@ def Upon_Click (button, button_state, cursor_x, cursor_y):
 
 def Draw ():
 
+	global zoom
+
 	global results
 	number_of_vertex = results[0]
 
@@ -129,6 +135,7 @@ def Draw ():
 	glPushMatrix();													# // NEW: Prepare Dynamic Transform
 	glMultMatrixf(g_Transform);										# // NEW: Apply Dynamic Transform
 	glColor3f(0.75,0.75,1.0);
+	glScale(1+zoom,1+zoom,1+zoom)
 	#Torus(0.30,1.00);
 	#Andrea comecou a modificar aqui
 	glColor4f(1.0,1.0,1.0,0.0)
@@ -152,6 +159,7 @@ def Draw ():
 def input_keyboard(*arg):
 
 	global results
+	global zoom
 
 	key = arg[0]
 
@@ -169,3 +177,11 @@ def input_keyboard(*arg):
 
 	if key == 'd':
 		results = loader('dodecahedron.ply')
+
+	if key == 'a':
+		zoom+=0.1
+		print "zoom= ",zoom 
+
+	if key == 'z':
+		zoom-=0.1
+		print "zoom= ",zoom
