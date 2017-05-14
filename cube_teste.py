@@ -11,12 +11,13 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 from math import *
 
+
 from main import *
 from glut_loader import loader
 #from matrix_opengl import *
 from matrix import *
 
-
+global results
 # Andrea mexeu
 results = loader('cube.ply')
 number_of_vertex = results[0]

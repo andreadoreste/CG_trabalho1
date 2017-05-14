@@ -45,6 +45,7 @@ import sys
 from lesson_48 import *		# Draw (), Initialize () and all the real OpenGL work.
 from ArcBall import *		# // *NEW* ArcBall header
 
+from glut_loader import loader
 
 # *********************** Globals *********************** 
 # Python 2.2 defines these directly
@@ -104,14 +105,26 @@ def ReSizeGLScene(Width, Height):
 
 # The function called whenever a key is pressed. Note the use of Python tuples to pass in: (key, x, y)  
 def keyPressed(*args):
+
+	global results
 	global g_quadratic
 	# If escape is pressed, kill everything.
 	key = args [0]
-	if key == ESCAPE:
-		gluDeleteQuadric (g_quadratic)
-		sys.exit ()
+	#if key == ESCAPE:
+	#	gluDeleteQuadric (g_quadratic)
+	#	sys.exit ()
+	if key == 'c':
+		print 'key c was pressed'
+		results = loader('cube.ply')
 
+	if key == 't':
+		results = loader('tetrahedron.ply')
+		print 'key t was pressed'
 
+	if key == 'o':
+		results = loader('octahedron.ply')
+		print 'key o was pressed'
+		
 
 def main():
 	global window
@@ -151,8 +164,8 @@ def main():
 	glutReshapeFunc(ReSizeGLScene)
 	
 	# Register the function called when the keyboard is pressed.  
-	glutKeyboardFunc(keyPressed)
-
+	#glutKeyboardFunc(keyPressed)
+	glutKeyboardFunc(input_keyboard)
 
 	# GLUT When mouse buttons are clicked in window
 	glutMouseFunc (Upon_Click)

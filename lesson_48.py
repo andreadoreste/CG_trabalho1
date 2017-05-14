@@ -6,9 +6,11 @@ import copy
 from math import cos, sin
 
 from numpy import *
-#from main import *
+from main import hedros
 from cube_func import *
 from glut_loader import loader
+
+from NeHeGL import *
 
 from ArcBall import * 				# ArcBallT and this tutorials set of points/vectors/matrix types
 
@@ -19,7 +21,7 @@ PI2 = 2.0*3.1415926535			# 2 * PI (not squared!) 		// PI Squared
 try:
 	True
 except NameError:
-	True = 1==1
+	True = 1==1	
 	False = 1==0
 
 g_Transform = Matrix4fT ()
@@ -30,16 +32,18 @@ g_ArcBall = ArcBallT (640, 480)
 g_isDragging = False
 g_quadratic = None
 
+global results
+
 # Andrea mexeu
-results = loader('cube.ply')
-#results = loader('tetrahedron.ply')
+#results = loader('cube.ply')
+results = loader('tetrahedron.ply')
 #results = loader('octahedron.ply')
 #results = loader('icosahedron.ply')
 #results = loader('pyramid_v2.ply')
-number_of_vertex = results[0]
-number_of_faces = results[1]
-vertex=results[2]
-faces=results[3]
+#number_of_vertex = results[0]
+#number_of_faces = results[1]
+#vertex=results[2]
+#faces=results[3]
 #Andrea terminou de mexer
 
 # A general OpenGL initialization function.  Sets all of the initial parameters. 
@@ -65,9 +69,6 @@ def Initialize (Width, Height):				# We call this right after our OpenGL window 
 	glEnable (GL_COLOR_MATERIAL)
 
 	return True
-
-
-
 
 def Upon_Drag (cursor_x, cursor_y):
 	""" Mouse cursor is moving
@@ -106,40 +107,21 @@ def Upon_Click (button, button_state, cursor_x, cursor_y):
 		g_LastRot = copy.copy (g_ThisRot);							# // Set Last Static Rotation To Last Dynamic One
 		g_isDragging = True											# // Prepare For Dragging
 		mouse_pt = Point2fT (cursor_x, cursor_y)
-		g_ArcBall.click (mouse_pt);								# // Update Start Vector And Prepare For Dragging
-
-	return
-
-
-
-def Torus(MinorRadius, MajorRadius):		
-	# // Draw A Torus With Normals
-	glBegin( GL_TRIANGLE_STRIP );									# // Start A Triangle Strip
-	for i in xrange (20): 											# // Stacks
-		for j in xrange (-1, 20): 										# // Slices
-			# NOTE, python's definition of modulus for negative numbers returns
-			# results different than C's
-			#       (a / d)*d  +  a % d = a
-			if (j < 0):
-				wrapFrac = (-j%20)/20.0
-				wrapFrac *= -1.0
-			else:
-				wrapFrac = (j%20)/20.0;
-			phi = PI2*wrapFrac;
-			sinphi = sin(phi);
-			cosphi = cos(phi);
-
-			r = MajorRadius + MinorRadius*cosphi;
-
-			glNormal3f (sin(PI2*(i%20+wrapFrac)/20.0)*cosphi, sinphi, cos(PI2*(i%20+wrapFrac)/20.0)*cosphi);
-			glVertex3f (sin(PI2*(i%20+wrapFrac)/20.0)*r, MinorRadius*sinphi, cos(PI2*(i%20+wrapFrac)/20.0)*r);
-
-			glNormal3f (sin(PI2*(i+1%20+wrapFrac)/20.0)*cosphi, sinphi, cos(PI2*(i+1%20+wrapFrac)/20.0)*cosphi);
-			glVertex3f (sin(PI2*(i+1%20+wrapFrac)/20.0)*r, MinorRadius*sinphi, cos(PI2*(i+1%20+wrapFrac)/20.0)*r);
-	glEnd();														# // Done Torus
+		tyi =g_ArcBall.click (mouse_pt);								# // Update Start Vector And Prepare For Dragging
+		print "tyi: " + str(tyi)
 	return
 
 def Draw ():
+
+	global results
+	number_of_vertex = results[0]
+
+	number_of_faces = results[1]
+	vertex=results[2]
+	
+	faces=results[3]
+	
+	#print faces
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);				# // Clear Screen And Depth Buffer
 	glLoadIdentity();												# // Reset The Current Modelview Matrix
 	glTranslatef(-1.5,0.0,-6.0);									# // Move Left 1.5 Units And Into The Screen 6.0
@@ -152,25 +134,38 @@ def Draw ():
 	glColor4f(1.0,1.0,1.0,0.0)
 
 	#cube(vertex,faces)
-	opened_cube(vertex,faces,1)
+	#opened_cube(vertex,faces,5)
 	#0 - ok
 	#1 - ok
 
 	#cube(vertex,faces)
 
-	#tetrahedon(vertex,faces)
+	hedros(vertex,faces)
 
 	glPopMatrix();													# // NEW: Unapply Dynamic Transform
-
-	glLoadIdentity();												# // Reset The Current Modelview Matrix
-	glTranslatef(1.5,0.0,-6.0);										# // Move Right 1.5 Units And Into The Screen 7.0
-
-	#glPushMatrix();													# // NEW: Prepare Dynamic Transform
-	#glMultMatrixf(g_Transform);										# // NEW: Apply Dynamic Transform
-	#glColor3f(1.0,0.75,0.75);
-	#gluSphere(g_quadratic,1.3,20,20);
-	#glPopMatrix();													# // NEW: Unapply Dynamic Transform
+													# // NEW: Unapply Dynamic Transform
 
 	glFlush ();														# // Flush The GL Rendering Pipeline
 	glutSwapBuffers()
 	return
+
+def input_keyboard(*arg):
+
+	global results
+
+	key = arg[0]
+
+	if key =='c':
+		results = loader('cube.ply')
+
+	if key == 't':
+		results = loader('tetrahedron.ply')
+
+	if key == 'o':
+		results = loader('octahedron.ply')
+
+	if key == 'i':
+		results =loader('icosahedron.ply')
+
+	if key == 'd':
+		results = loader('dodecahedron.ply')

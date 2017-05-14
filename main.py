@@ -49,7 +49,13 @@ def cube(vertex,faces):
 
 
 def hedros(vertex,faces):
-        glBegin(GL_TRIANGLES)
+
+        n_faces = len(faces)
+
+        if n_faces ==6:
+            glBegin(GL_QUADS)            
+        else:
+            glBegin(GL_TRIANGLES)
         #print vertex
         for face in faces:
                 point_a = vertex[face[0]]
@@ -83,7 +89,7 @@ def opened_cube(vertex,faces,inicial_face,ang=90):
     print faces_matrix
 
 
-    for face in DFS_faces_vector:
+    for face in DFS_faces_vector:   
         
 
         index = DFS_faces_vector.index(face)

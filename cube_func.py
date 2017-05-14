@@ -1,6 +1,8 @@
 import sys
 import os
 import linecache
+from math import pi
+
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
@@ -16,11 +18,11 @@ from graph_cg import *
 #from geometry import *
 #from matrix import *
 
-colors = [(0.0,1.0,0.0,1.0),(0.0,0.0,1.0,1.0),(0.0,1.0,1.0,1.0),(1.0,1.0,1.0,1.0),(1.0,1.0,0.0,1.0),(1.0,0.0,0.0,1.0)]
+colors = [(0.0,1.0,0.0,1.0),(0.0,0.0,1.0,1.0),(0.0,1.0,1.0,1.0),(1.0,1.0,1.0,1.0),(1.0,1.0,0.0,1.0),(1.0,0.0,0.0,1.0),(0.0,1.0,0.0,1.0),(0.0,0.0,1.0,1.0)]
 
 def opened_cube(vertex,faces,initial_face, ang=90):
+	n_faces =len(faces)
 	
-	#glLoadIdentity()
 
 	#<DFS>
 
@@ -28,19 +30,19 @@ def opened_cube(vertex,faces,initial_face, ang=90):
 	#depth_fs[0] -> path 
 	#depth_fs[1] -> neighbors
 	DFS = depht_fs(graph_cube,initial_face)
-
+	#DFS = depht_fs(graph_octahedron,initial_face)
 	#faces vertex from the DFS path
 	path = DFS[0]
-	print path
+	
 	DFS_faces_vector = create_face_vector(faces,path)
 	dfs_parents = DFS[1]
-	print dfs
+	
 
 	#</DFS>
 
 	#Create an array with an identity matrix for each face
 	faces_matrix = []
-	for i in range(6):
+	for i in range(n_faces):
 		faces_matrix.append(matrix(identity(4)))
 
 	#Start drawing the faces
@@ -84,7 +86,7 @@ def opened_cube(vertex,faces,initial_face, ang=90):
 			#point_c1 = Point(point_c1[0],point_c1[1],point_c1[2])
 
 			normal_vec_face_anterior = calc_normal(point_a1,point_b1,point_c1)
-			print normal_vec_face_anterior
+			#print normal_vec_face_anterior
 
 			point_a2 = vertex[f2[0]]
 			#point_a2 = Point(point_a2[0],point_a2[1],point_a2[2])
@@ -96,14 +98,18 @@ def opened_cube(vertex,faces,initial_face, ang=90):
             #point_c2 = Point(point_c2[0],point_c2[1],point_c2[2])
 
 			normal_vec_face_atual = calc_normal(point_a2,point_b2,point_c2)
-			print normal_vec_face_atual
+			#print normal_vec_face_atual
 
 			cross_product = cross(normal_vec_face_atual,normal_vec_face_anterior)
 			cross_product= cross_product.tolist()
 
 			dot_product = dot(normal_vec_face_atual, normal_vec_face_anterior)
-			print dot_product
+			#print 'dot_product',dot_product
 
+			#Find the angle
+			angle = arccos(dot_product)
+			angle = angle*180/pi
+			#print 'angle',angle
 			#Finding the edge
 			edge = compare(f1,f2)
 
@@ -115,66 +121,51 @@ def opened_cube(vertex,faces,initial_face, ang=90):
 
 			edge_vector = difference(point_2,point_1)
 			edge_vector = abs(edge_vector)
-			print edge_vector
+			
 			
 			axis = [cross_product[0]*edge_vector[0],cross_product[1]*edge_vector[1],cross_product[2]*edge_vector[2]]
 
 			teste =dot(edge_vector,cross_product)
-			print teste
+			
 			#if teste<0:
 			#	ang = -ang
 			#print "ang: " + str(ang)
 			#print "f2: " + str(pair[1])
-			tr = translateAndRotate(ang,point_1,axis)
+			tr = translateAndRotate(angle,point_1,axis)
 			tr = matrix(tr)
-			print 'type tr'
-			print type(tr)
-			print 'type m'
-			print type(m)
-			#comb = tr*m
+			
 			comb = tr*faces_matrix[face_prev]
-			print "comb"
-			print comb
+			
 			faces_matrix[face_i] = comb
-			#print "tr"
-			#print tr
-			#glMultMatrixf(tr.view(type=ndarray))
 			glMultMatrixf(comb.view(type=ndarray))
-			#glMultMatrixf(faces_matrix[face_i])
-		#glLoadIdentity()	
+					
 		
-		
-		
-		#glColor4fv(colors[index])
-		#glMultMatrixf(faces_matrix[face_i])
-		
-		#glColor4fv(colors[index])
-
 		#desenha
-		#glPopMatrix()
+		
 		glPushMatrix()
-		glBegin(GL_QUADS)
-		print "start drawing"
+		if n_faces==6:
+			glBegin(GL_QUADS)
+		else:
+			glBegin(GL_TRIANGLES)
+		
 
 		for vert in face:
 			glVertex3fv(vertex[vert])
-			print vertex[vert]
-		print "end drawing"
-		
+			
 		glEnd()
 		glPopMatrix()
 		m = glGetDoublev(GL_MODELVIEW_MATRIX)
 		m = matrix(m)
 		
 		
-		print 'face_i: ' + str(face_i)
-		print "m"
-		print m
-		#faces_matrix[face_i] = m
-
 		glPopMatrix()
 	#print 'faces_matrix'
 	#print faces_matrix	
+
+def opened_hedros(vertex,faces,initial_face):
+	pass
+
+
 def main():
 	results = loader('cube.ply')
 	opened_cube(results[2],results[3],3)
