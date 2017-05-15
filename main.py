@@ -19,7 +19,11 @@ from graph_cg import *
 from geometry import *
 from matrix import *
 
-colors = [(0.0,1.0,0.0,1.0),(0.0,0.0,1.0,1.0),(0.0,1.0,1.0,1.0),(1.0,1.0,1.0,1.0),(1.0,1.0,0.0,1.0),(1.0,0.0,0.0,1.0)]
+colors = [(0.0,1.0,0.0,1.0),(0.0,0.0,1.0,1.0),(0.0,1.0,1.0,1.0),(1.0,1.0,1.0,1.0), 
+            (1.0,1.0,0.0,1.0),(1.0,0.0,0.0,1.0),(1.000, 0.412, 0.706,1.0),(1.000, 0.388, 0.278, 1.0), 
+            (0.780, 0.082, 0.522, 1.0),(1.000, 0.647, 0.000, 1.0),(1.000, 0.855, 0.725, 1.0),(0.902, 0.902, 0.980, 1.0),
+            (0.282, 0.239, 0.545, 1.0),(0.498, 1.000, 0.000, 1.0),(0.957, 0.643, 0.376, 1.0),(1.000, 0.753, 0.796, 1.0),
+            (0.000, 0.980, 0.604, 1.0), (0.000, 0.000, 0.502, 1.0), (0.961, 0.961, 0.863,1.0), (0.753, 0.753, 0.753,1.0)]
 
 
 #basic cube - closed
@@ -51,23 +55,26 @@ def cube(vertex,faces):
 def hedros(vertex,faces):
 
         n_faces = len(faces)
-
-        if n_faces ==6:
-            glBegin(GL_QUADS)            
-        else:
-            glBegin(GL_TRIANGLES)
-        #print vertex
         for face in faces:
-                point_a = vertex[face[0]]
-                point_b = vertex[face[1]]
-                point_c = vertex[face[2]]
-                normal_vector = calc_normal(point_a,point_b,point_c)
-                glNormal3fv(normal_vector)
-                for vert in face:
-                        glVertex3fv(vertex[vert])
+            index = faces.index(face)
+            glColor4fv(colors[index])
+            #if n_faces ==6:
+            #    glBegin(GL_QUADS)            
+            #else:
+                #glBegin(GL_TRIANGLES)
+            glBegin(GL_POLYGON)
+        #print vertex
+        #for face in faces:
+            point_a = vertex[face[0]]
+            point_b = vertex[face[1]]
+            point_c = vertex[face[2]]
+            normal_vector = calc_normal(point_a,point_b,point_c)
+            glNormal3fv(normal_vector)
+            for vert in face:
+                glVertex3fv(vertex[vert])
 #                       
         #               print (vertex[vert])
-        glEnd()
+            glEnd()
         return
 
 #abrir o cubo com glRotate e glTranslate

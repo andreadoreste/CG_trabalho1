@@ -1,5 +1,6 @@
 from glut_loader import *
 #from main import *
+from make_graph import *
 
 #results = loader('cube.ply')
 #results = loader('tetrahedron.ply')
@@ -32,6 +33,8 @@ graph_octahedron = {0: [1,3,4],
 		6: [2,5,7],
 		7: [3,4,6],
 		}
+
+graph_icosahedron = make_graph(faces)
 
 def dfs_iter(graph, root):
 	visited = []
