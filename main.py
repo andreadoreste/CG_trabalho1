@@ -17,8 +17,10 @@ from glut_loader import *
 from matrix_opengl import *
 from graph_cg import *
 from geometry import *
-from matrix import *
+#from matrix import *
 
+
+global colors
 colors = [(0.0,1.0,0.0,1.0),(0.0,0.0,1.0,1.0),(0.0,1.0,1.0,1.0),(1.0,1.0,1.0,1.0), 
             (1.0,1.0,0.0,1.0),(1.0,0.0,0.0,1.0),(1.000, 0.412, 0.706,1.0),(1.000, 0.388, 0.278, 1.0), 
             (0.780, 0.082, 0.522, 1.0),(1.000, 0.647, 0.000, 1.0),(1.000, 0.855, 0.725, 1.0),(0.902, 0.902, 0.980, 1.0),
@@ -72,7 +74,12 @@ def hedros(vertex,faces):
             glEnd()
         return
 
-def plan_hedros(vertex,faces,initial_face, ang=90):
+def opened_cube(vertex,faces,initial_face, ang=90):
+    
+    graph = make_graph(faces)
+
+    print graph
+
     n_faces =len(faces)
     
 
@@ -81,7 +88,7 @@ def plan_hedros(vertex,faces,initial_face, ang=90):
     #depth_fs returns an array
     #depth_fs[0] -> path 
     #depth_fs[1] -> neighbors
-    DFS = depht_fs(graph_cube,initial_face)
+    DFS = depht_fs(graph,initial_face)
     #DFS = depht_fs(graph_octahedron,initial_face)
     #faces vertex from the DFS path
     path = DFS[0]
@@ -104,8 +111,8 @@ def plan_hedros(vertex,faces,initial_face, ang=90):
         glPushMatrix()  
         
         index = DFS_faces_vector.index(face)
-        
-        glColor4fv(colors[index])
+        it = faces.index(face)
+        glColor4fv(colors[it])
 
         #Testing with only two faces
         #if index>=2:
@@ -195,11 +202,11 @@ def plan_hedros(vertex,faces,initial_face, ang=90):
         #desenha
         
         glPushMatrix()
-        if n_faces==6:
-            glBegin(GL_QUADS)
-        else:
-            glBegin(GL_TRIANGLES)
-        
+        #if n_faces==6:
+        #   glBegin(GL_QUADS)
+        #else:
+        #   glBegin(GL_TRIANGLES)
+        glBegin(GL_POLYGON)
 
         for vert in face:
             glVertex3fv(vertex[vert])

@@ -6,8 +6,8 @@ import copy
 from math import cos, sin
 
 from numpy import *
-from main import hedros, plan_hedros
-from cube_func import *
+from main import *
+#from cube_func import *
 from glut_loader import loader
 
 from NeHeGL import *
@@ -40,6 +40,10 @@ zoom = 0
 
 global mode
 mode = 0
+
+global initial_face
+initial_face = 0
+
 # Andrea mexeu
 
 #results = loader('tetrahedron.ply')
@@ -97,14 +101,27 @@ def Upon_Click (button, button_state, cursor_x, cursor_y):
 		Glut calls this function when a mouse button is
 		clicked or released.
 	"""
+	global initial_face
+	global mode
 	global g_isDragging, g_LastRot, g_Transform, g_ThisRot
 
 	g_isDragging = False
 	if (button == GLUT_RIGHT_BUTTON and button_state == GLUT_UP):
 		# Right button click
-		g_LastRot = Matrix3fSetIdentity ();							# // Reset Rotation
-		g_ThisRot = Matrix3fSetIdentity ();							# // Reset Rotation
-		g_Transform = Matrix4fSetRotationFromMatrix3f (g_Transform, g_ThisRot);	# // Reset Rotation
+		mouse_pt = Point2fT (cursor_x, cursor_y)
+		print "Mode: ",mode
+		if mode==0:
+			print 'in'
+			mode=1
+			initial_face = getMousePos3D(mouse_pt[0],mouse_pt[1])
+			print "mode:",mode
+		else:
+			mode=0
+		print "mode:",mode	
+
+		#g_LastRot = Matrix3fSetIdentity ();							# // Reset Rotation
+		#g_ThisRot = Matrix3fSetIdentity ();							# // Reset Rotation
+		#g_Transform = Matrix4fSetRotationFromMatrix3f (g_Transform, g_ThisRot);	# // Reset Rotation
 	elif (button == GLUT_LEFT_BUTTON and button_state == GLUT_UP):
 		# Left button released
 		g_LastRot = copy.copy (g_ThisRot);							# // Set Last Static Rotation To Last Dynamic One
@@ -113,14 +130,18 @@ def Upon_Click (button, button_state, cursor_x, cursor_y):
 		g_LastRot = copy.copy (g_ThisRot);							# // Set Last Static Rotation To Last Dynamic One
 		g_isDragging = True											# // Prepare For Dragging
 		mouse_pt = Point2fT (cursor_x, cursor_y)
-		tyi =g_ArcBall.click (mouse_pt);								# // Update Start Vector And Prepare For Dragging
-		print "tyi: " + str(tyi)
+		#print mouse_pt
+		g_ArcBall.click (mouse_pt);								# // Update Start Vector And Prepare For Dragging
+		
+		#initial_face = getMousePos3D(mouse_pt[0],mouse_pt[1])
+
+		print 
 	return
 
 def Draw ():
 
-	initial_face = 0
-
+	global initial_face
+	
 	global zoom
 
 	global results
@@ -152,7 +173,7 @@ def Draw ():
 	#cube(vertex,faces)
 		
 	if mode == 1:
-		opened_cube(vertex,faces,3)
+		opened_cube(vertex,faces,initial_face)
 	#0 - ok
 	#1 - ok
 
@@ -172,6 +193,8 @@ def input_keyboard(*arg):
 	global results
 	global zoom
 	global mode
+
+	global g_isDragging, g_LastRot, g_Transform, g_ThisRot
 
 	key = arg[0]
 
@@ -203,3 +226,52 @@ def input_keyboard(*arg):
 
 	if key =='l':
 		mode = 1
+
+	if key == 'r':
+		g_LastRot = Matrix3fSetIdentity ();							# // Reset Rotation
+		g_ThisRot = Matrix3fSetIdentity ();							# // Reset Rotation
+		g_Transform = Matrix4fSetRotationFromMatrix3f (g_Transform, g_ThisRot);	# // Reset Rotation
+
+def getMousePos3D(x, y):
+	#global mode
+	#modelview = Matrix4fT ()
+	#projection = Matrix4fT ()
+	#viewport = Matrix4fT ()
+
+
+	modelview = glGetDoublev( GL_MODELVIEW_MATRIX)
+	projection = glGetDoublev( GL_PROJECTION_MATRIX)
+	viewport = glGetIntegerv( GL_VIEWPORT)
+
+	winX = float(x)
+	print "viewport",viewport[3]
+	print 'y,',y
+	winY = ((viewport[3]) - (y))
+
+	print winY
+	winZ = glReadPixels(x, int(winY),1,1,GL_DEPTH_COMPONENT,GL_FLOAT)
+	print"winZ",winZ
+	
+	color = glReadPixels(x,int(winY),1,1, GL_RGBA,GL_FLOAT)
+	print "color ",color
+	
+	teste_i = compare_color(color,colors)
+	#print 'color',color,'teste_i',teste_i
+	#gluUnProject(winX,winY,winZ, modelview, projection,viewport,posX,posY,posZ)
+	#pos = gluUnProject(winX,winY,winZ, modelview, projection,viewport)
+	#print 'pos',pos
+	#color = glReadPixels(pos[0],int(winZ),1,1, GL_RGB,GL_FLOAT)
+	#return pos
+	#mode = 1
+	return teste_i
+
+
+def compare_color(color,colors_list):
+	try:
+		color=color[0][0]
+		color = list(color)
+		color = tuple(color)
+		itc = colors_list.index(color)
+		return itc
+	except:
+		print "Not selected!"
