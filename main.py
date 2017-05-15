@@ -58,13 +58,8 @@ def hedros(vertex,faces):
         for face in faces:
             index = faces.index(face)
             glColor4fv(colors[index])
-            #if n_faces ==6:
-            #    glBegin(GL_QUADS)            
-            #else:
-                #glBegin(GL_TRIANGLES)
+        
             glBegin(GL_POLYGON)
-        #print vertex
-        #for face in faces:
             point_a = vertex[face[0]]
             point_b = vertex[face[1]]
             point_c = vertex[face[2]]
@@ -77,111 +72,148 @@ def hedros(vertex,faces):
             glEnd()
         return
 
-#abrir o cubo com glRotate e glTranslate
-def opened_cube(vertex,faces,inicial_face,ang=90):
-    DFS = depht_fs(graph_cube, inicial_face)
-    #DFS[0] -> ordem de abertura das faces
-    print DFS[0]
-    DFS_faces_vector = create_face_vector(faces,DFS[0])
-    print DFS_faces_vector
-    #dfs_parents -> vizinhos
+def plan_hedros(vertex,faces,initial_face, ang=90):
+    n_faces =len(faces)
+    
+
+    #<DFS>
+
+    #depth_fs returns an array
+    #depth_fs[0] -> path 
+    #depth_fs[1] -> neighbors
+    DFS = depht_fs(graph_cube,initial_face)
+    #DFS = depht_fs(graph_octahedron,initial_face)
+    #faces vertex from the DFS path
+    path = DFS[0]
+    
+    DFS_faces_vector = create_face_vector(faces,path)
     dfs_parents = DFS[1]
-    print dfs_parents
     
-    
-    #cria um array de matrizes identidades, uma para cada face do cubo
+
+    #</DFS>
+
+    #Create an array with an identity matrix for each face
     faces_matrix = []
-    for i in range(6):
-        faces_matrix.append(identity())
-    print faces_matrix
+    for i in range(n_faces):
+        faces_matrix.append(matrix(identity(4)))
 
-
-    for face in DFS_faces_vector:   
+    #Start drawing the faces
+    face_i = path[0]    
+    for face in DFS_faces_vector:
         
-
+        glPushMatrix()  
+        
         index = DFS_faces_vector.index(face)
-
-        if index>=2:
-            break
-        #face inicial não sofre transformação             
-        if face!=DFS_faces_vector[0]:
-                        
-            #faces pai e filha
-            pair = dfs_parents.pop(0)
-            print pair            
-
-            #Descobrir o Eixo de Rotação
-            f1 = faces[pair[0]]
-            f2 = faces[pair[1]]
-            print f1
-            point_a1 = vertex[f1[0]]
-            print point_a1
-            point_b1 = vertex[f1[1]]
-            point_c1 = vertex[f1[2]]
-            normal_vector1 = calc_normal(point_a1,point_b1,point_c1)
-            print normal_vector1
-            
-
-            point_a2 = vertex[f2[0]]
-            point_b2 = vertex[f2[1]]
-            point_c2 = vertex[f2[2]]
-            normal_vector2 = calc_normal(point_a2,point_b2,point_c2)
-            print normal_vector2
-            #print pair
-            
-            face_anterior = normal_vector1
-            face_atual = normal_vector2
-            cross_product = cross(face_atual,face_anterior)
-            print cross_product
-
-            #pegar as arestas das faces n e n-1
-            i1=pair[0]
-            i2=pair[1]
-            edge = compare(faces[i1],faces[i2])
-            #if not edge:
-            #       edge = compare(DFS_faces_vector[index-2],DFS_faces_vector[index])
-                                
-            #glPushMatrix()
-            print edge
-            v1 = edge[0]
-            v1 = vertex[v1]
-            print v1
-            v2 = edge[1]
-            v2 = vertex[v2]
-            print normal_vector2
-            #difference(a,b) = ax - bx, ay - by, az - bz
-                       
-            vector = difference(v2,v1)
-            vector = abs(vector)
-            axis = [cross_product[0]*vector[0],cross_product[1]*vector[1],cross_product[2]*vector[2]]
-            axis = Point(axis[0],axis[1],axis[2])
-            print axis
-            
-            v1 = Point(v1[0],v1[1],v1[2])
-            v2 = Point(v2[0],v2[1],v2[2])
-
-            tr = translateAndRotate(ang,v1,axis)
-            t = faces_matrix[i]*tr
-            print 'faces'
-            print faces_matrix[i]
-            print t
-            print type(t)   
-            glMultMatrixf(t.view(type=np.ndarray))
-        
         
         glColor4fv(colors[index])
-        #desenha
-           
-    
-        glBegin(GL_QUADS)
-        #glBegin(GL_TRIANGLES)
-        print "start drawing"
-        for vert in face:
-            print vert
-            print vertex[vert]
+
+        #Testing with only two faces
+        #if index>=2:
+        #   break
+        #Doesn't need to apply any transformations at the first face
+        if face!=DFS_faces_vector[0]:
+
+            #Array pair = [face n-1, face n]
+            pair = dfs_parents.pop(0)
+
+            #face being modificated
+            face_i = pair[1]
+            face_prev = pair[0]
+            #Array f1,f2 = faces[n]=[p1, p2, p3, p4]
+            # Each p is a vertex of the face    
+            f1 = faces[pair[0]]
+            f2 = faces[pair[1]]
+
+            #Calculate the normal array
+            #point_x1 returns a array with the coordinates like [-1,1,1]
+            point_a1 = vertex[f1[0]]
+
+            # From a Array to a Point object
+            #point_a1 = Point(point_a1[0],point_a1[1],point_a1[2])
+
+            point_b1 = vertex[f1[1]]
+            #point_b1 = Point(point_b1[0],point_b1[1],point_b1[2])
+
+            point_c1 = vertex[f1[2]]
+            #point_c1 = Point(point_c1[0],point_c1[1],point_c1[2])
+
+            normal_vec_face_anterior = calc_normal(point_a1,point_b1,point_c1)
+            #print normal_vec_face_anterior
+
+            point_a2 = vertex[f2[0]]
+            #point_a2 = Point(point_a2[0],point_a2[1],point_a2[2])
+
+            point_b2 = vertex[f2[1]]
+            #point_b2 = Point(point_b2[0],point_b2[1],point_b2[2])
+
+            point_c2 = vertex[f2[2]]
+            #point_c2 = Point(point_c2[0],point_c2[1],point_c2[2])
+
+            normal_vec_face_atual = calc_normal(point_a2,point_b2,point_c2)
+            #print normal_vec_face_atual
+
+            cross_product = cross(normal_vec_face_atual,normal_vec_face_anterior)
+            cross_product= cross_product.tolist()
+
+            dot_product = dot(normal_vec_face_atual, normal_vec_face_anterior)
+            #print 'dot_product',dot_product
+
+            #Find the angle
+            angle = arccos(dot_product)
+            angle = angle*180/pi
+            #print 'angle',angle
+            #Finding the edge
+            edge = compare(f1,f2)
+
+            point_1 = edge[0]
+            point_1 = vertex[point_1]
+
+            point_2 = edge[1]
+            point_2 = vertex[point_2]
+
+            edge_vector = difference(point_2,point_1)
+            edge_vector = abs(edge_vector)
+            
+            
+            axis = [cross_product[0]*edge_vector[0],cross_product[1]*edge_vector[1],cross_product[2]*edge_vector[2]]
+
+            teste =dot(edge_vector,cross_product)
+            
+            #if teste<0:
+            #   ang = -ang
+            #print "ang: " + str(ang)
+            #print "f2: " + str(pair[1])
+            tr = translateAndRotate(angle,point_1,axis)
+            tr = matrix(tr)
+            
+            comb = tr*faces_matrix[face_prev]
+            
+            faces_matrix[face_i] = comb
+            glMultMatrixf(comb.view(type=ndarray))
                     
+        
+        #desenha
+        
+        glPushMatrix()
+        if n_faces==6:
+            glBegin(GL_QUADS)
+        else:
+            glBegin(GL_TRIANGLES)
+        
+
+        for vert in face:
             glVertex3fv(vertex[vert])
+            
         glEnd()
+        glPopMatrix()
+        m = glGetDoublev(GL_MODELVIEW_MATRIX)
+        m = matrix(m)
+        
+        
+        glPopMatrix()
+    #print 'faces_matrix'
+    #print faces_matrix 
+
         
 
 

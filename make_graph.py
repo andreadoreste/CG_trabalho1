@@ -36,7 +36,7 @@ def make_graph(faces):
 
 def main():
 	#results= loader('icosahedron.ply')
-	results= loader('octahedron.ply')
+	results= loader('dodecahedron.ply')
 	faces = results[3]
 	r = make_graph(faces)
 	#r =pairs(faces)

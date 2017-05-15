@@ -67,6 +67,7 @@ def dfs(graph,root,visited=None):
 	if root in visited:
 		return
 	visited.append(root)
+	print "root",root
 	for x in graph[root]:
 
 		if x not in visited:

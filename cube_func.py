@@ -15,12 +15,22 @@ from normal_vector import *
 from glut_loader import *
 from matrix_opengl import *
 from graph_cg import *
+from make_graph import *
 #from geometry import *
 #from matrix import *
 
-colors = [(0.0,1.0,0.0,1.0),(0.0,0.0,1.0,1.0),(0.0,1.0,1.0,1.0),(1.0,1.0,1.0,1.0),(1.0,1.0,0.0,1.0),(1.0,0.0,0.0,1.0),(0.0,1.0,0.0,1.0),(0.0,0.0,1.0,1.0)]
+colors = [(0.0,1.0,0.0,1.0),(0.0,0.0,1.0,1.0),(0.0,1.0,1.0,1.0),(1.0,1.0,1.0,1.0), 
+            (1.0,1.0,0.0,1.0),(1.0,0.0,0.0,1.0),(1.000, 0.412, 0.706,1.0),(1.000, 0.388, 0.278, 1.0), 
+            (0.780, 0.082, 0.522, 1.0),(1.000, 0.647, 0.000, 1.0),(1.000, 0.855, 0.725, 1.0),(0.902, 0.902, 0.980, 1.0),
+            (0.282, 0.239, 0.545, 1.0),(0.498, 1.000, 0.000, 1.0),(0.957, 0.643, 0.376, 1.0),(1.000, 0.753, 0.796, 1.0),
+            (0.000, 0.980, 0.604, 1.0), (0.000, 0.000, 0.502, 1.0), (0.961, 0.961, 0.863,1.0), (0.753, 0.753, 0.753,1.0)]
 
 def opened_cube(vertex,faces,initial_face, ang=90):
+	
+	graph = make_graph(faces)
+
+	print graph
+
 	n_faces =len(faces)
 	
 
@@ -29,7 +39,7 @@ def opened_cube(vertex,faces,initial_face, ang=90):
 	#depth_fs returns an array
 	#depth_fs[0] -> path 
 	#depth_fs[1] -> neighbors
-	DFS = depht_fs(graph_cube,initial_face)
+	DFS = depht_fs(graph,initial_face)
 	#DFS = depht_fs(graph_octahedron,initial_face)
 	#faces vertex from the DFS path
 	path = DFS[0]
@@ -52,8 +62,8 @@ def opened_cube(vertex,faces,initial_face, ang=90):
 		glPushMatrix()	
 		
 		index = DFS_faces_vector.index(face)
-		
-		glColor4fv(colors[index])
+		it = faces.index(face)
+		glColor4fv(colors[it])
 
 		#Testing with only two faces
 		#if index>=2:
@@ -143,11 +153,11 @@ def opened_cube(vertex,faces,initial_face, ang=90):
 		#desenha
 		
 		glPushMatrix()
-		if n_faces==6:
-			glBegin(GL_QUADS)
-		else:
-			glBegin(GL_TRIANGLES)
-		
+		#if n_faces==6:
+		#	glBegin(GL_QUADS)
+		#else:
+		#	glBegin(GL_TRIANGLES)
+		glBegin(GL_POLYGON)
 
 		for vert in face:
 			glVertex3fv(vertex[vert])
@@ -162,8 +172,6 @@ def opened_cube(vertex,faces,initial_face, ang=90):
 	#print 'faces_matrix'
 	#print faces_matrix	
 
-def opened_hedros(vertex,faces,initial_face):
-	pass
 
 
 def main():

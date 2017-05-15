@@ -6,7 +6,7 @@ import copy
 from math import cos, sin
 
 from numpy import *
-from main import hedros
+from main import hedros, plan_hedros
 from cube_func import *
 from glut_loader import loader
 
@@ -33,14 +33,16 @@ g_isDragging = False
 g_quadratic = None
 
 global results
+results = loader('cube.ply')
 
 global zoom
-
 zoom = 0
 
+global mode
+mode = 0
 # Andrea mexeu
-#results = loader('cube.ply')
-results = loader('tetrahedron.ply')
+
+#results = loader('tetrahedron.ply')
 #results = loader('octahedron.ply')
 #results = loader('icosahedron.ply')
 #results = loader('pyramid_v2.ply')
@@ -117,9 +119,14 @@ def Upon_Click (button, button_state, cursor_x, cursor_y):
 
 def Draw ():
 
+	initial_face = 0
+
 	global zoom
 
 	global results
+
+	global mode
+
 	number_of_vertex = results[0]
 
 	number_of_faces = results[1]
@@ -140,15 +147,19 @@ def Draw ():
 	#Andrea comecou a modificar aqui
 	glColor4f(1.0,1.0,1.0,0.0)
 
+	if mode == 0:
+		hedros(vertex,faces)
 	#cube(vertex,faces)
-	#opened_cube(vertex,faces,5)
+		
+	if mode == 1:
+		opened_cube(vertex,faces,3)
 	#0 - ok
 	#1 - ok
 
 	#cube(vertex,faces)
 
-	hedros(vertex,faces)
-
+	#hedros(vertex,faces)
+	#plan_hedros(vertex,faces,initial_face)
 	glPopMatrix();													# // NEW: Unapply Dynamic Transform
 													# // NEW: Unapply Dynamic Transform
 
@@ -160,6 +171,7 @@ def input_keyboard(*arg):
 
 	global results
 	global zoom
+	global mode
 
 	key = arg[0]
 
@@ -185,3 +197,9 @@ def input_keyboard(*arg):
 	if key == 'z':
 		zoom-=0.1
 		print "zoom= ",zoom
+
+	if key == 'p':
+		mode = 0
+
+	if key =='l':
+		mode = 1
