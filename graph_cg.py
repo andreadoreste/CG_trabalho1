@@ -67,7 +67,7 @@ def dfs(graph,root,visited=None):
 	if root in visited:
 		return
 	visited.append(root)
-	print "root",root
+	
 	for x in graph[root]:
 
 		if x not in visited:
@@ -97,7 +97,7 @@ def depht_fs(graph,root):
 	#print depht_fs(graph_cube,i)
 
 r = depht_fs(graph_cube,3)
-print r
+
 #result= create_face_vector(faces,r[0])
 #print result
 #print a

@@ -33,7 +33,7 @@ def make_graph(faces):
 	
 
 
-
+'''
 def main():
 	#results= loader('icosahedron.ply')
 	results= loader('dodecahedron.ply')
@@ -45,3 +45,4 @@ def main():
 
 if __name__ =='__main__':
 	main()
+'''

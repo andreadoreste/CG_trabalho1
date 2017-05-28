@@ -78,7 +78,7 @@ def opened_cube(vertex,faces,initial_face, ang=90):
     
     graph = make_graph(faces)
 
-    print graph
+    #print graph
 
     n_faces =len(faces)
     
