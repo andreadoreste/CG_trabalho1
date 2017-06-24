@@ -92,7 +92,7 @@ def opened_cube(vertex,faces,initial_face, ang=90):
     #DFS = depht_fs(graph_octahedron,initial_face)
     #faces vertex from the DFS path
     path = DFS[0]
-    
+    print path
     DFS_faces_vector = create_face_vector(faces,path)
     dfs_parents = DFS[1]
     
@@ -119,17 +119,18 @@ def opened_cube(vertex,faces,initial_face, ang=90):
         #   break
         #Doesn't need to apply any transformations at the first face
         if face!=DFS_faces_vector[0]:
-
+            print 'vertex',len(vertex)
+            print vertex 
             #Array pair = [face n-1, face n]
             pair = dfs_parents.pop(0)
-
+            print 'pair',pair
             #face being modificated
             face_i = pair[1]
             face_prev = pair[0]
             #Array f1,f2 = faces[n]=[p1, p2, p3, p4]
             # Each p is a vertex of the face    
-            f1 = faces[pair[0]]
-            f2 = faces[pair[1]]
+            f1 = faces[pair[0]] #face 1
+            f2 = faces[pair[1]] #face 2
 
             #Calculate the normal array
             #point_x1 returns a array with the coordinates like [-1,1,1]
@@ -161,7 +162,7 @@ def opened_cube(vertex,faces,initial_face, ang=90):
 
             cross_product = cross(normal_vec_face_atual,normal_vec_face_anterior)
             cross_product= cross_product.tolist()
-
+            print 'cross product',cross_product
             dot_product = dot(normal_vec_face_atual, normal_vec_face_anterior)
             #print 'dot_product',dot_product
 
@@ -171,26 +172,28 @@ def opened_cube(vertex,faces,initial_face, ang=90):
             #print 'angle',angle
             #Finding the edge
             edge = compare(f1,f2)
-
+            print 'edge',edge
             point_1 = edge[0]
             point_1 = vertex[point_1]
-
+            print 'point_1',point_1
             point_2 = edge[1]
             point_2 = vertex[point_2]
-
+            print 'point_2',point_2
             edge_vector = difference(point_2,point_1)
+            print 'edge_vector',edge_vector
             edge_vector = abs(edge_vector)
-            
+            print 'edge_vector_abs',edge_vector
             
             axis = [cross_product[0]*edge_vector[0],cross_product[1]*edge_vector[1],cross_product[2]*edge_vector[2]]
-
+            print 'axis',axis
             teste =dot(edge_vector,cross_product)
             
             #if teste<0:
             #   ang = -ang
             #print "ang: " + str(ang)
             #print "f2: " + str(pair[1])
-            tr = translateAndRotate(angle,point_1,axis)
+            #tr = translateAndRotate(angle,point_1,axis)
+            tr = translateAndRotate(angle,point_1,cross_product)            
             tr = matrix(tr)
             
             comb = tr*faces_matrix[face_prev]
