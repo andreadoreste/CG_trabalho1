@@ -9,7 +9,7 @@ from numpy import *
 from main import *
 #from cube_func import *
 from glut_loader import loader
-
+from cal_point import calc_vertex
 from NeHeGL import *
 
 from ArcBall import * 				# ArcBallT and this tutorials set of points/vectors/matrix types
@@ -109,15 +109,15 @@ def Upon_Click (button, button_state, cursor_x, cursor_y):
 	if (button == GLUT_RIGHT_BUTTON and button_state == GLUT_UP):
 		# Right button click
 		mouse_pt = Point2fT (cursor_x, cursor_y)
-		print "Mode: ",mode
+		#print "Mode: ",mode
 		if mode==0:
-			print 'in'
+			#print 'in'
 			mode=1
 			initial_face = getMousePos3D(mouse_pt[0],mouse_pt[1])
-			print "mode:",mode
+			#print "mode:",mode
 		else:
 			mode=0
-		print "mode:",mode	
+		#print "mode:",mode	
 
 		#g_LastRot = Matrix3fSetIdentity ();							# // Reset Rotation
 		#g_ThisRot = Matrix3fSetIdentity ();							# // Reset Rotation
@@ -130,12 +130,12 @@ def Upon_Click (button, button_state, cursor_x, cursor_y):
 		g_LastRot = copy.copy (g_ThisRot);							# // Set Last Static Rotation To Last Dynamic One
 		g_isDragging = True											# // Prepare For Dragging
 		mouse_pt = Point2fT (cursor_x, cursor_y)
-		#print mouse_pt
+		##print mouse_pt
 		g_ArcBall.click (mouse_pt);								# // Update Start Vector And Prepare For Dragging
 		
 		#initial_face = getMousePos3D(mouse_pt[0],mouse_pt[1])
 
-		print 
+		#print 
 	return
 
 def Draw ():
@@ -152,13 +152,13 @@ def Draw ():
 
 	number_of_faces = results[1]
 	vertex=results[2]
-	
+	print vertex
 	faces=results[3]
 	
-	#print faces
+	print faces
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);				# // Clear Screen And Depth Buffer
 	glLoadIdentity();												# // Reset The Current Modelview Matrix
-	glTranslatef(0.0,0.0,-6.0);									# // Move Left 1.5 Units And Into The Screen 6.0
+	#glTranslatef(0.0,0.0,-6.0);									# // Move Left 1.5 Units And Into The Screen 6.0
 
 	glPushMatrix();													# // NEW: Prepare Dynamic Transform
 	glMultMatrixf(g_Transform);										# // NEW: Apply Dynamic Transform
@@ -168,12 +168,47 @@ def Draw ():
 	#Andrea comecou a modificar aqui
 	glColor4f(1.0,1.0,1.0,0.0)
 
+
 	if mode == 0:
+		glTranslatef(1.0,1.0,1.0)
 		hedros(vertex,faces)
-	#cube(vertex,faces)
+		M = glGetDoublev(GL_MODELVIEW_MATRIX)
+		M = M.transpose()
+		M = M.tolist()
+		#print 'result'
+		point_teste = [-1,-1,-1]
 		
+		#print calc_vertex(M,point_teste)
+		#print M
+	#cube(vertex,faces)
+			
 	if mode == 1:
-		opened_cube(vertex,faces,initial_face)
+		#opened_cube(vertex,faces,initial_face)
+		#glTranslatef(0.0,0.0,6.0)
+		glTranslatef(1.0,3.0,1.0) #y=1, coloco o ponto da face zero no y=0, y=2+1, onde 2 desloca a face mais baixa (5) pro z=0 
+		T = glGetDoublev(GL_MODELVIEW_MATRIX)
+		#print 'T'
+		#print T
+		M = opened_cube(vertex,faces,0)
+		#M = glGetDoublev(GL_MODELVIEW_MATRIX)
+		#M = matrix(M)
+		#print 'M'
+		#M = M.transpose()
+		#print M
+		M = M.tolist()
+		##print 't[0]'
+		##print t[0][0]
+		#print type(M)
+
+		##print M
+		point_teste = [-1,-1,-1]
+		#print 'result'
+		#print calc_vertex(M,point_teste)
+		#print 'experimental'
+		#print calc_vertex(T,point_teste)
+		#glPopMatrix()
+		#glTranslatef(0.0,0.0,-6.0)
+		#glRotatef(90,1.0,2.0,1.0)
 	#0 - ok
 	#1 - ok
 
@@ -215,11 +250,11 @@ def input_keyboard(*arg):
 
 	if key == 'a':
 		zoom+=0.1
-		print "zoom= ",zoom 
+		#print "zoom= ",zoom 
 
 	if key == 'z':
 		zoom-=0.1
-		print "zoom= ",zoom
+		#print "zoom= ",zoom
 
 	if key == 'p':
 		mode = 0
@@ -244,22 +279,22 @@ def getMousePos3D(x, y):
 	viewport = glGetIntegerv( GL_VIEWPORT)
 
 	winX = float(x)
-	print "viewport",viewport[3]
-	print 'y,',y
+	#print "viewport",viewport[3]
+	#print 'y,',y
 	winY = ((viewport[3]) - (y))
 
-	print winY
+	#print winY
 	winZ = glReadPixels(x, int(winY),1,1,GL_DEPTH_COMPONENT,GL_FLOAT)
-	print"winZ",winZ
+	#print"winZ",winZ
 	
 	color = glReadPixels(x,int(winY),1,1, GL_RGBA,GL_FLOAT)
-	print "color ",color
+	#print "color ",color
 	
 	teste_i = compare_color(color,colors)
-	#print 'color',color,'teste_i',teste_i
+	##print 'color',color,'teste_i',teste_i
 	#gluUnProject(winX,winY,winZ, modelview, projection,viewport,posX,posY,posZ)
 	#pos = gluUnProject(winX,winY,winZ, modelview, projection,viewport)
-	#print 'pos',pos
+	##print 'pos',pos
 	#color = glReadPixels(pos[0],int(winZ),1,1, GL_RGB,GL_FLOAT)
 	#return pos
 	#mode = 1
@@ -274,4 +309,5 @@ def compare_color(color,colors_list):
 		itc = colors_list.index(color)
 		return itc
 	except:
-		print "Not selected!"
+		pass
+		#print "Not selected!"

@@ -8,6 +8,13 @@ class Point(object):
 		self.y = y
 		self.z = z
 
+def translate(dx,dy,dz):
+	M = identity(4)
+
+	M[0,3] = dx
+	M[1,3] = dy
+	M[2,3] = dz
+	return M
 
 def translateAndRotate(ang, p, axis):
 	px = p[0]

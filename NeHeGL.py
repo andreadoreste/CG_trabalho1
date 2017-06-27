@@ -95,7 +95,7 @@ def ReSizeGLScene(Width, Height):
 	# // field of view, aspect ratio, near and far
 	# This will squash and stretch our objects as the window is resized.
 	# Note that the near clip plane is 1 (hither) and the far plane is 1000 (yon)
-	gluPerspective(45.0, float(Width)/float(Height), 1, 100.0)
+	gluPerspective(45.0, float(Width)/float(Height), 1, 1000.0)
 
 	glMatrixMode (GL_MODELVIEW);		# // Select The Modelview Matrix
 	glLoadIdentity ();					# // Reset The Modelview Matrix
@@ -139,7 +139,8 @@ def main():
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_ALPHA | GLUT_DEPTH)
 	
 	# get a 640 x 480 window 
-	glutInitWindowSize(640, 480)
+	#glutInitWindowSize(640, 480)
+	glutInitWindowSize(800, 800)
 	
 	# the window starts at the upper left corner of the screen 
 	glutInitWindowPosition(0, 0)
@@ -180,8 +181,8 @@ def main():
 	# tying in a rendering context, so we are ready to start making immediate mode
 	# GL calls.
 	# Call to perform inital GL setup (the clear colors, enabling modes
-	Initialize (640, 480)
-
+	#Initialize (640, 480)
+	Initialize (800, 800)
 	# Start Event Processing Engine	
 	glutMainLoop()
 
