@@ -5,6 +5,7 @@ from OpenGL.GLUT import *
 from OpenGL.GLU import *
 import sys
 import copy
+import TextureMap_PauloRoma as tmap
 from math import cos, sin
 
 from numpy import *
@@ -42,26 +43,15 @@ global zoom
 zoom = 0
 
 global mode
-mode = 0
+mode = 1
 
 global initial_face
 initial_face = 0
 
-# Andrea mexeu
-
-#results = loader('tetrahedron.ply')
-#results = loader('octahedron.ply')
-#results = loader('icosahedron.ply')
-#results = loader('pyramid_v2.ply')
-#number_of_vertex = results[0]
-#number_of_faces = results[1]
-#vertex=results[2]
-#faces=results[3]
-#Andrea terminou de mexer
-
 # A general OpenGL initialization function.  Sets all of the initial parameters. 
 def Initialize (Width, Height):				# We call this right after our OpenGL window is created.
 	global g_quadratic
+	global gl_context
 
 	glClearColor(0.0, 0.0, 0.0, 1.0)					# This Will Clear The Background Color To Black
 	glClearDepth(1.0)									# Enables Clearing Of The Depth Buffer
@@ -70,9 +60,9 @@ def Initialize (Width, Height):				# We call this right after our OpenGL window 
 	glShadeModel (GL_FLAT);								# Select Flat Shading (Nice Definition Of Objects)
 	glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST) 	# Really Nice Perspective Calculations
 
-	g_quadratic = gluNewQuadric();
-	gluQuadricNormals(g_quadratic, GLU_SMOOTH);
-	gluQuadricDrawStyle(g_quadratic, GLU_FILL); 
+	#g_quadratic = gluNewQuadric();
+	#gluQuadricNormals(g_quadratic, GLU_SMOOTH);
+	#gluQuadricDrawStyle(g_quadratic, GLU_FILL); 
 	# Why? this tutorial never maps any textures?! ? 
 	# gluQuadricTexture(g_quadratic, GL_TRUE);			# // Create Texture Coords
 
@@ -80,6 +70,9 @@ def Initialize (Width, Height):				# We call this right after our OpenGL window 
 	glEnable (GL_LIGHTING)
 
 	glEnable (GL_COLOR_MATERIAL)
+
+	gl_context = tmap.TestContext()
+
 
 	return True
 
@@ -142,6 +135,7 @@ def Upon_Click (button, button_state, cursor_x, cursor_y):
 	return
 
 def Draw ():
+	global gl_context
 
 	global initial_face
 	
@@ -150,6 +144,11 @@ def Draw ():
 	global results
 
 	global mode
+
+	#Parece Inútil
+	gl_context.setCamera()	
+
+	gl_context.setupTexture()
 
 	number_of_vertex = results[0]
 
@@ -186,28 +185,21 @@ def Draw ():
 		
 		print cp.calc_vertex(M,point_teste)
 		#print M
-	#cube(vertex,faces)
-			
+				
 	if mode == 1:
 		print 'l'
 
-		#opened_cube(vertex,faces,initial_face)
+		
 		#glTranslatef(0.0,0.0,6.0)
 		#glTranslatef(1.0,3.0,1.0) #y=1, coloco o ponto da face zero no y=0, y=2+1, onde 2 desloca a face mais baixa (5) pro z=0 
 		T = glGetDoublev(GL_MODELVIEW_MATRIX)
-		tr_matrix = opened_cube(vertex,faces,0)
-		
-		#print calc_vertex(M,point_teste)
-		#print 'experimental'
-		#print calc_vertex(T,point_teste)
-		#glPopMatrix()
-		#glTranslatef(0.0,0.0,-6.0)
-		#glRotatef(90,1.0,2.0,1.0)
+		tr_matrix = opened_cube(vertex,faces,initial_face)
 		
 		####COMECA A TRANSFORMACAO####
+		#Calcula novos vertices transformados
 		new_vertex_faces= cp.calc_all_vertex(vertex,faces,tr_matrix)
-		print 'new_vertex_faces'
-		print new_vertex_faces[0]
+		
+		#Calcula Box
 		#Box is a class from geometry
 		B = Box()
 		for pol in new_vertex_faces:
@@ -217,14 +209,11 @@ def Draw ():
 		print "Box"
 		print B.bbox
 
+		
 
 	#0 - ok
 	#1 - ok
 
-	#cube(vertex,faces)
-
-	#hedros(vertex,faces)
-	#plan_hedros(vertex,faces,initial_face)
 	glPopMatrix();													# // NEW: Unapply Dynamic Transform
 													# // NEW: Unapply Dynamic Transform
 

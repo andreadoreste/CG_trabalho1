@@ -27,6 +27,14 @@ colors = [(0.0,1.0,0.0,1.0),(0.0,0.0,1.0,1.0),(0.0,1.0,1.0,1.0),(1.0,1.0,1.0,1.0
             (0.282, 0.239, 0.545, 1.0),(0.498, 1.000, 0.000, 1.0),(0.957, 0.643, 0.376, 1.0),(1.000, 0.753, 0.796, 1.0),
             (0.000, 0.980, 0.604, 1.0), (0.000, 0.000, 0.502, 1.0), (0.961, 0.961, 0.863,1.0), (0.753, 0.753, 0.753,1.0)]
 
+def draw(vertex,face):
+
+    glBegin(GL_POLYGON)
+    #glColor4fv(colors[index])
+    for vert in face:
+        glVertex3fv(vertex[vert])
+       
+    glEnd()
 
 #basic cube - closed
 def cube(vertex,faces):
@@ -52,16 +60,13 @@ def hedros(vertex,faces):
             index = faces.index(face)
             glColor4fv(colors[index])
         
-            glBegin(GL_POLYGON)
             point_a = vertex[face[0]]
             point_b = vertex[face[1]]
             point_c = vertex[face[2]]
             normal_vector = calc_normal(point_a,point_b,point_c)
             glNormal3fv(normal_vector)
-            for vert in face:
-                glVertex3fv(vertex[vert])
-       
-            glEnd()
+            
+            draw(vertex,face)
         return
 
 def opened_cube(vertex,faces,initial_face, ang=90):
@@ -171,13 +176,8 @@ def opened_cube(vertex,faces,initial_face, ang=90):
         #desenha
         
         glPushMatrix()
+        draw(vertex,face)
         
-        glBegin(GL_POLYGON)
-
-        for vert in face:
-            glVertex3fv(vertex[vert])
-            
-        glEnd()
         glPopMatrix()
         
         glPopMatrix()

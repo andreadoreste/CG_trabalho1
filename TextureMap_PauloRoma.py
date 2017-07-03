@@ -53,7 +53,10 @@ class TestContext( object ):
 	#  This method combines all of the functionality required to load the image with PIL, 
 	#  convert it to a format compatible with PyOpenGL, generate the texture ID, 
 	#  and store the image data under that texture ID.
-	def loadImage( self, imageName = "tnt_25747.png" ):
+	
+	def loadImage( self, imageName ='8316_128x128.png'):
+					
+	#def loadImage( self, imageName = "tnt_25747.png" ):
 		"""Load an image file as a 2D texture using PIL"""
 
 		# PIL defines an "open" method which is Image specific!
@@ -101,7 +104,7 @@ class TestContext( object ):
 		"""Render scene geometry"""
 
 		self.setCamera()
-		#glRotated(time.time()%(8.0)/8 * -360, 1,0,0)
+		glRotated(time.time()%(8.0)/8 * -360, 1,0,0)
 
 		self.setupTexture()
 		self.drawCube()
@@ -138,11 +141,11 @@ class TestContext( object ):
 
 		# Clear Screen And Depth Buffer
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-		opened_cube(vertex,faces,2)
-		print faces[2]
+		#opened_cube(vertex,faces,2)
+		#print faces[2]
 		glRotatef(45,0.0,2.0,0.0)
 		#glRotatef(45,)
-		'''
+		
 		glBegin(GL_QUADS)
 		glColor3f(1.0,0.0,0.0)
 		glTexCoord2f(0.0, 0.0); glVertex3f(-1.0, -1.0,  1.0);
@@ -175,7 +178,7 @@ class TestContext( object ):
 		glTexCoord2f(1.0, 1.0); glVertex3f(-1.0,  1.0,  1.0);
 		glTexCoord2f(0.0, 1.0); glVertex3f(-1.0,  1.0, -1.0);
 		glEnd()
-		'''
+		
 		'''
 		glBegin(GL_QUADS)
 		glColor3f(1.0,0.0,0.0)
