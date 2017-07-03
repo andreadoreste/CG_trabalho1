@@ -1,3 +1,5 @@
+ # -*- coding: utf-8 -*-
+
 from OpenGL.GL import *
 from OpenGL.GLUT import *
 from OpenGL.GLU import *
@@ -9,8 +11,9 @@ from numpy import *
 from main import *
 #from cube_func import *
 from glut_loader import loader
-from cal_point import calc_vertex
+import cal_point as cp
 from NeHeGL import *
+from geometry import Box, Point
 
 from ArcBall import * 				# ArcBallT and this tutorials set of points/vectors/matrix types
 
@@ -158,7 +161,7 @@ def Draw ():
 	print faces
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);				# // Clear Screen And Depth Buffer
 	glLoadIdentity();												# // Reset The Current Modelview Matrix
-	#glTranslatef(0.0,0.0,-6.0);									# // Move Left 1.5 Units And Into The Screen 6.0
+	glTranslatef(0.0,0.0,-6.0);									# // Move Left 1.5 Units And Into The Screen 6.0
 
 	glPushMatrix();													# // NEW: Prepare Dynamic Transform
 	glMultMatrixf(g_Transform);										# // NEW: Apply Dynamic Transform
@@ -170,45 +173,64 @@ def Draw ():
 
 
 	if mode == 0:
-		glTranslatef(1.0,1.0,1.0)
+		#glTranslatef(1.0,1.0,1.0)
 		hedros(vertex,faces)
 		M = glGetDoublev(GL_MODELVIEW_MATRIX)
 		M = M.transpose()
 		M = M.tolist()
-		#print 'result'
+		print 'result'
 		point_teste = [-1,-1,-1]
 		
-		#print calc_vertex(M,point_teste)
+		print cp.calc_vertex(M,point_teste)
 		#print M
 	#cube(vertex,faces)
 			
 	if mode == 1:
+		print 'l'
+
 		#opened_cube(vertex,faces,initial_face)
 		#glTranslatef(0.0,0.0,6.0)
-		glTranslatef(1.0,3.0,1.0) #y=1, coloco o ponto da face zero no y=0, y=2+1, onde 2 desloca a face mais baixa (5) pro z=0 
+		#glTranslatef(1.0,3.0,1.0) #y=1, coloco o ponto da face zero no y=0, y=2+1, onde 2 desloca a face mais baixa (5) pro z=0 
 		T = glGetDoublev(GL_MODELVIEW_MATRIX)
-		#print 'T'
-		#print T
-		M = opened_cube(vertex,faces,0)
-		#M = glGetDoublev(GL_MODELVIEW_MATRIX)
-		#M = matrix(M)
-		#print 'M'
-		#M = M.transpose()
-		#print M
-		M = M.tolist()
-		##print 't[0]'
-		##print t[0][0]
-		#print type(M)
-
-		##print M
-		point_teste = [-1,-1,-1]
-		#print 'result'
+		tr_matrix = opened_cube(vertex,faces,0)
+		
 		#print calc_vertex(M,point_teste)
 		#print 'experimental'
 		#print calc_vertex(T,point_teste)
 		#glPopMatrix()
 		#glTranslatef(0.0,0.0,-6.0)
 		#glRotatef(90,1.0,2.0,1.0)
+		####COMECA A TRANSFORMACAO####
+		new_vertex_faces= cp.calc_all_vertex(vertex,faces,tr_matrix)
+		print 'new_vertex_faces'
+		print new_vertex_faces[0]
+		#Box is a class from geometry
+		B = Box()
+		for pol in new_vertex_faces:
+			for pt in pol.points:
+				B.add(pt)
+
+		'''
+		for f in faces:
+			f_index = faces.index(f)
+			print "f_index"
+			print f_index
+			#f something like [0,1,2,3]
+			for v in f:
+			
+				tr_matrix_i = tr_matrix[f_index]
+				tr_matrix_i = tr_matrix_i.transpose()
+				tr_matrix_i = tr_matrix_i.tolist()
+				point=cp.calc_vertex(tr_matrix_i,vertex[v])
+				point_i = Point(point[0],point[1],point[2])
+				B.add(point_i)
+		
+		
+
+		'''
+		print "Box"
+		print B.bbox
+
 	#0 - ok
 	#1 - ok
 
