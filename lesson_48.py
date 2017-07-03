@@ -161,6 +161,8 @@ def Draw ():
 	print faces
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);				# // Clear Screen And Depth Buffer
 	glLoadIdentity();												# // Reset The Current Modelview Matrix
+	
+	##problema em potencial!
 	glTranslatef(0.0,0.0,-6.0);									# // Move Left 1.5 Units And Into The Screen 6.0
 
 	glPushMatrix();													# // NEW: Prepare Dynamic Transform
@@ -173,6 +175,7 @@ def Draw ():
 
 
 	if mode == 0:
+
 		#glTranslatef(1.0,1.0,1.0)
 		hedros(vertex,faces)
 		M = glGetDoublev(GL_MODELVIEW_MATRIX)
@@ -200,6 +203,7 @@ def Draw ():
 		#glPopMatrix()
 		#glTranslatef(0.0,0.0,-6.0)
 		#glRotatef(90,1.0,2.0,1.0)
+		
 		####COMECA A TRANSFORMACAO####
 		new_vertex_faces= cp.calc_all_vertex(vertex,faces,tr_matrix)
 		print 'new_vertex_faces'
@@ -210,26 +214,9 @@ def Draw ():
 			for pt in pol.points:
 				B.add(pt)
 
-		'''
-		for f in faces:
-			f_index = faces.index(f)
-			print "f_index"
-			print f_index
-			#f something like [0,1,2,3]
-			for v in f:
-			
-				tr_matrix_i = tr_matrix[f_index]
-				tr_matrix_i = tr_matrix_i.transpose()
-				tr_matrix_i = tr_matrix_i.tolist()
-				point=cp.calc_vertex(tr_matrix_i,vertex[v])
-				point_i = Point(point[0],point[1],point[2])
-				B.add(point_i)
-		
-		
-
-		'''
 		print "Box"
 		print B.bbox
+
 
 	#0 - ok
 	#1 - ok
@@ -283,6 +270,9 @@ def input_keyboard(*arg):
 
 	if key =='l':
 		mode = 1
+
+	if key =='m':
+		mode =2
 
 	if key == 'r':
 		g_LastRot = Matrix3fSetIdentity ();							# // Reset Rotation

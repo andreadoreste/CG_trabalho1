@@ -30,9 +30,8 @@ colors = [(0.0,1.0,0.0,1.0),(0.0,0.0,1.0,1.0),(0.0,1.0,1.0,1.0),(1.0,1.0,1.0,1.0
 
 #basic cube - closed
 def cube(vertex,faces):
-	#glBegin(GL_QUADS)
-	#print vertex
-	for face in faces:
+	
+    for face in faces:
                 glBegin(GL_QUADS)
                 point_a = vertex[face[0]]
                 point_b = vertex[face[1]]
@@ -42,16 +41,8 @@ def cube(vertex,faces):
 		for vert in face:
 			glVertex3fv(vertex[vert])
 
-#			
-#			print (vertex[vert])
                 glEnd()
-
-#		
-            	
-	#		print (vertex[vert])
-	#glEnd()
-
-	return
+    return
 
 
 def hedros(vertex,faces):
@@ -69,28 +60,16 @@ def hedros(vertex,faces):
             glNormal3fv(normal_vector)
             for vert in face:
                 glVertex3fv(vertex[vert])
-#                       
-        #               print (vertex[vert])
+       
             glEnd()
         return
 
 def opened_cube(vertex,faces,initial_face, ang=90):
-    #new_vertex vai receber as novas coordenadas do ponto
-    new_vertex = []
     
-
-    print "vertex"
-    print vertex
-    print 'faces'
-    print faces
-
     graph = make_graph(faces)
-
-    #print graph
 
     n_faces =len(faces)
     
-
     #<DFS>
 
     #depth_fs returns an array
@@ -104,7 +83,6 @@ def opened_cube(vertex,faces,initial_face, ang=90):
     DFS_faces_vector = create_face_vector(faces,path)
     dfs_parents = DFS[1]
     
-
     #</DFS>
 
     #Create an array with an identity matrix for each face
@@ -122,9 +100,6 @@ def opened_cube(vertex,faces,initial_face, ang=90):
         it = faces.index(face)
         glColor4fv(colors[it])
 
-        #Testing with only two faces
-        #if index>=2:
-        #   break
         #Doesn't need to apply any transformations at the first face
         if face!=DFS_faces_vector[0]:
             print 'vertex',len(vertex)
@@ -178,29 +153,13 @@ def opened_cube(vertex,faces,initial_face, ang=90):
             angle = arccos(dot_product)
             angle = angle*180/pi
             #print 'angle',angle
+            
             #Finding the edge
             edge = compare(f1,f2)
             #print 'edge',edge
             point_1 = edge[0]
             point_1 = vertex[point_1]
-            #print 'point_1',point_1
-            #point_2 = edge[1]
-            #point_2 = vertex[point_2]
-            #print 'point_2',point_2
-            #edge_vector = difference(point_2,point_1)
-            #print 'edge_vector',edge_vector
-            #edge_vector = abs(edge_vector)
-            #print 'edge_vector_abs',edge_vector
             
-            #axis = [cross_product[0]*edge_vector[0],cross_product[1]*edge_vector[1],cross_product[2]*edge_vector[2]]
-            #print 'axis',axis
-            #teste =dot(edge_vector,cross_product)
-            
-            #if teste<0:
-            #   ang = -ang
-            #print "ang: " + str(ang)
-            #print "f2: " + str(pair[1])
-            #tr = translateAndRotate(angle,point_1,axis)
             tr = translateAndRotate(angle,point_1,cross_product)            
             tr = matrix(tr)
             
@@ -209,14 +168,10 @@ def opened_cube(vertex,faces,initial_face, ang=90):
             faces_matrix[face_i] = comb
             glMultMatrixf(comb.view(type=ndarray))
                     
-        
         #desenha
         
         glPushMatrix()
-        #if n_faces==6:
-        #   glBegin(GL_QUADS)
-        #else:
-        #   glBegin(GL_TRIANGLES)
+        
         glBegin(GL_POLYGON)
 
         for vert in face:
@@ -224,18 +179,10 @@ def opened_cube(vertex,faces,initial_face, ang=90):
             
         glEnd()
         glPopMatrix()
-        #m = glGetDoublev(GL_MODELVIEW_MATRIX)
-        #m = matrix(m)
-        #print 'm'
-        #print m
         
         glPopMatrix()
-    #print 'm'
-    #return faces_matrix[0]    
     return faces_matrix
-    #print 'faces_matrix'
-    #print faces_matrix 
-
+    
         
 
 
