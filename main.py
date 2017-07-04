@@ -40,34 +40,36 @@ def draw(vertex,face):
 def cube(vertex,faces):
 	
     for face in faces:
-                glBegin(GL_QUADS)
-                point_a = vertex[face[0]]
-                point_b = vertex[face[1]]
-                point_c = vertex[face[2]]
-                normal_vector = calc_normal(point_a,point_b,point_c)
-                glNormal3fv(normal_vector)
-		for vert in face:
+        
+        glBegin(GL_QUADS)
+        point_a = vertex[face[0]]
+        point_b = vertex[face[1]]
+        point_c = vertex[face[2]]
+        normal_vector = calc_normal(point_a,point_b,point_c)
+        glNormal3fv(normal_vector)
+        for vert in face:
 			glVertex3fv(vertex[vert])
 
-                glEnd()
+        glEnd()
     return
 
 
 def hedros(vertex,faces):
 
-        n_faces = len(faces)
-        for face in faces:
-            index = faces.index(face)
-            glColor4fv(colors[index])
+    n_faces = len(faces)
+    for face in faces:
+        index = faces.index(face)
+        print 'faces:' + str(index)
+        glColor4fv(colors[index])
         
-            point_a = vertex[face[0]]
-            point_b = vertex[face[1]]
-            point_c = vertex[face[2]]
-            normal_vector = calc_normal(point_a,point_b,point_c)
-            glNormal3fv(normal_vector)
+        point_a = vertex[face[0]]
+        point_b = vertex[face[1]]
+        point_c = vertex[face[2]]
+        normal_vector = calc_normal(point_a,point_b,point_c)
+        glNormal3fv(normal_vector)
             
-            draw(vertex,face)
-        return
+        draw(vertex,face)
+    return
 
 def opened_cube(vertex,faces,initial_face, ang=90):
     
@@ -182,8 +184,29 @@ def opened_cube(vertex,faces,initial_face, ang=90):
         
         glPopMatrix()
     return faces_matrix
-    
-        
+
+   
+def t_open_hedros(new_vertex_faces):
+    #Create box and insert all points in it
+    B = Box()
+    for pol in new_vertex_faces:
+        for pt in pol.points:
+            B.add(pt)
+    print "Box"
+    print B.bbox        
+
+    for pol in new_vertex_faces:
+        glBegin(GL_POLYGON)
+        glColor4f(1.0,1.0,1.0,1.0)
+        #glColor entraria aqui
+        for point in pol.points:
+            t= B.normalize(point)
+            glTexCoord2f(t[0],t[1])
+            print point
+            glVertex3f(point[0],point[1],point[2])
+        glEnd()
+
+
 
 
 

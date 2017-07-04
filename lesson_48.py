@@ -45,8 +45,14 @@ zoom = 0
 global mode
 mode = 1
 
+global is_texture
+is_texture = False
+
 global initial_face
 initial_face = 0
+
+global new_vertex_faces
+new_vertex_faces=[]
 
 # A general OpenGL initialization function.  Sets all of the initial parameters. 
 def Initialize (Width, Height):				# We call this right after our OpenGL window is created.
@@ -145,8 +151,10 @@ def Draw ():
 
 	global mode
 
+	global new_vertex_faces
+
 	#Parece Inútil
-	gl_context.setCamera()	
+	#gl_context.setCamera()	
 
 	gl_context.setupTexture()
 
@@ -174,40 +182,46 @@ def Draw ():
 
 
 	if mode == 0:
+		print "Texture"
+		print is_texture
+		print new_vertex_faces
 
-		#glTranslatef(1.0,1.0,1.0)
-		hedros(vertex,faces)
-		M = glGetDoublev(GL_MODELVIEW_MATRIX)
-		M = M.transpose()
-		M = M.tolist()
-		print 'result'
-		point_teste = [-1,-1,-1]
+		if (is_texture==True and new_vertex_faces):
+			#t_open_hedros(new_vertex_faces)
+			pass
+		else:
+			print 'mode'
+			print mode
+			hedros(vertex,faces)
 		
-		print cp.calc_vertex(M,point_teste)
-		#print M
 				
 	if mode == 1:
-		print 'l'
+		print 'Texture'
+		print is_texture
 
+		if is_texture==True and new_vertex_faces:
+			#codigo entra aqui
+			t_open_hedros(new_vertex_faces)	
 		
+		else:
 		#glTranslatef(0.0,0.0,6.0)
 		#glTranslatef(1.0,3.0,1.0) #y=1, coloco o ponto da face zero no y=0, y=2+1, onde 2 desloca a face mais baixa (5) pro z=0 
-		T = glGetDoublev(GL_MODELVIEW_MATRIX)
-		tr_matrix = opened_cube(vertex,faces,initial_face)
+		#T = glGetDoublev(GL_MODELVIEW_MATRIX)
+			tr_matrix = opened_cube(vertex,faces,initial_face)
 		
-		####COMECA A TRANSFORMACAO####
-		#Calcula novos vertices transformados
-		new_vertex_faces= cp.calc_all_vertex(vertex,faces,tr_matrix)
+			####COMECA A TRANSFORMACAO####
+			#Calcula novos vertices transformados
+			new_vertex_faces= cp.calc_all_vertex(vertex,faces,tr_matrix)
 		
 		#Calcula Box
 		#Box is a class from geometry
-		B = Box()
-		for pol in new_vertex_faces:
-			for pt in pol.points:
-				B.add(pt)
+		#B = Box()
+		#for pol in new_vertex_faces:
+		#	for pt in pol.points:
+		#		B.add(pt)
 
-		print "Box"
-		print B.bbox
+		#print "Box"
+		#print B.bbox
 
 		
 
@@ -226,6 +240,7 @@ def input_keyboard(*arg):
 	global results
 	global zoom
 	global mode
+	global is_texture
 
 	global g_isDragging, g_LastRot, g_Transform, g_ThisRot
 
@@ -260,8 +275,10 @@ def input_keyboard(*arg):
 	if key =='l':
 		mode = 1
 
-	if key =='m':
-		mode =2
+	if key =='h':
+		is_texture = True
+
+
 
 	if key == 'r':
 		g_LastRot = Matrix3fSetIdentity ();							# // Reset Rotation
