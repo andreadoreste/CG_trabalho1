@@ -184,7 +184,6 @@ def opened_cube(vertex,faces,initial_face, ang=90):
         
         glPopMatrix()
     return faces_matrix
-
    
 def t_open_hedros(new_vertex_faces):
     #Create box and insert all points in it
@@ -206,6 +205,36 @@ def t_open_hedros(new_vertex_faces):
             glVertex3f(point[0],point[1],point[2])
         glEnd()
 
+def t_hedros(new_vertex_faces,faces,vertex):
+    #Create box and insert all points in it
+    B = Box()
+    for pol in new_vertex_faces:
+        for pt in pol.points:
+            B.add(pt)
+    print "Box"
+    print B.bbox        
+
+    for face in faces:
+        #indice da face
+        i_face = faces.index(face)
+        #pol_i vai ser o poligono de mesma posição no array new_vertex_faces
+        pol_i = new_vertex_faces[i_face]
+
+        glBegin(GL_POLYGON)
+        glColor4f(1.0,1.0,1.0,1.0)
+        #glColor entraria aqui
+        #Para cada vertice da face
+        for vert in face:
+            #pego o indice do vertice
+            i_vert = face.index(vert)
+            #pego o ponto do poligono de mesmo indice
+            point = pol_i.points[i_vert]
+
+            t= B.normalize(point)
+            glTexCoord2f(t[0],t[1])
+            print point
+            glVertex3fv(vertex[vert])
+        glEnd()
 
 
 

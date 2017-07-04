@@ -188,6 +188,7 @@ def Draw ():
 
 		if (is_texture==True and new_vertex_faces):
 			#t_open_hedros(new_vertex_faces)
+			t_hedros(new_vertex_faces,faces,vertex)
 			pass
 		else:
 			print 'mode'
@@ -281,6 +282,7 @@ def input_keyboard(*arg):
 
 
 	if key == 'r':
+		is_texture=False
 		g_LastRot = Matrix3fSetIdentity ();							# // Reset Rotation
 		g_ThisRot = Matrix3fSetIdentity ();							# // Reset Rotation
 		g_Transform = Matrix4fSetRotationFromMatrix3f (g_Transform, g_ThisRot);	# // Reset Rotation
