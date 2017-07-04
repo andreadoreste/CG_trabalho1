@@ -10,7 +10,6 @@ from math import cos, sin
 
 from numpy import *
 from main import *
-#from cube_func import *
 from glut_loader import loader
 import cal_point as cp
 from NeHeGL import *
@@ -55,7 +54,7 @@ global new_vertex_faces
 new_vertex_faces=[]
 
 # A general OpenGL initialization function.  Sets all of the initial parameters. 
-def Initialize (Width, Height):				# We call this right after our OpenGL window is created.
+def Initialize (Width,	 Height):				# We call this right after our OpenGL window is created.
 	global g_quadratic
 	global gl_context
 
@@ -66,19 +65,12 @@ def Initialize (Width, Height):				# We call this right after our OpenGL window 
 	glShadeModel (GL_FLAT);								# Select Flat Shading (Nice Definition Of Objects)
 	glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST) 	# Really Nice Perspective Calculations
 
-	#g_quadratic = gluNewQuadric();
-	#gluQuadricNormals(g_quadratic, GLU_SMOOTH);
-	#gluQuadricDrawStyle(g_quadratic, GLU_FILL); 
-	# Why? this tutorial never maps any textures?! ? 
-	# gluQuadricTexture(g_quadratic, GL_TRUE);			# // Create Texture Coords
-
 	glEnable (GL_LIGHT0)
 	glEnable (GL_LIGHTING)
 
 	glEnable (GL_COLOR_MATERIAL)
 
 	gl_context = tmap.TestContext()
-
 
 	return True
 
@@ -111,19 +103,13 @@ def Upon_Click (button, button_state, cursor_x, cursor_y):
 	if (button == GLUT_RIGHT_BUTTON and button_state == GLUT_UP):
 		# Right button click
 		mouse_pt = Point2fT (cursor_x, cursor_y)
-		#print "Mode: ",mode
 		if mode==0:
-			#print 'in'
 			mode=1
 			initial_face = getMousePos3D(mouse_pt[0],mouse_pt[1])
-			#print "mode:",mode
+			
 		else:
 			mode=0
-		#print "mode:",mode	
-
-		#g_LastRot = Matrix3fSetIdentity ();							# // Reset Rotation
-		#g_ThisRot = Matrix3fSetIdentity ();							# // Reset Rotation
-		#g_Transform = Matrix4fSetRotationFromMatrix3f (g_Transform, g_ThisRot);	# // Reset Rotation
+		
 	elif (button == GLUT_LEFT_BUTTON and button_state == GLUT_UP):
 		# Left button released
 		g_LastRot = copy.copy (g_ThisRot);							# // Set Last Static Rotation To Last Dynamic One
@@ -132,12 +118,9 @@ def Upon_Click (button, button_state, cursor_x, cursor_y):
 		g_LastRot = copy.copy (g_ThisRot);							# // Set Last Static Rotation To Last Dynamic One
 		g_isDragging = True											# // Prepare For Dragging
 		mouse_pt = Point2fT (cursor_x, cursor_y)
-		##print mouse_pt
 		g_ArcBall.click (mouse_pt);								# // Update Start Vector And Prepare For Dragging
 		
-		#initial_face = getMousePos3D(mouse_pt[0],mouse_pt[1])
-
-		#print 
+		
 	return
 
 def Draw ():
@@ -153,85 +136,60 @@ def Draw ():
 
 	global new_vertex_faces
 
-	#Parece Inútil
 	#gl_context.setCamera()	
 
+	#Setup Texture
 	gl_context.setupTexture()
+
 
 	number_of_vertex = results[0]
 
 	number_of_faces = results[1]
+	#List of vertex
 	vertex=results[2]
-	print vertex
+	
+	#List of faces
 	faces=results[3]
 	
-	print faces
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);				# // Clear Screen And Depth Buffer
 	glLoadIdentity();												# // Reset The Current Modelview Matrix
 	
-	##problema em potencial!
 	glTranslatef(0.0,0.0,-6.0);									# // Move Left 1.5 Units And Into The Screen 6.0
 
 	glPushMatrix();													# // NEW: Prepare Dynamic Transform
 	glMultMatrixf(g_Transform);										# // NEW: Apply Dynamic Transform
 	glColor3f(0.75,0.75,1.0);
 	glScale(1+zoom,1+zoom,1+zoom)
-	#Torus(0.30,1.00);
-	#Andrea comecou a modificar aqui
-	glColor4f(1.0,1.0,1.0,0.0)
-
-
+	
+	#glColor4f(1.0,1.0,1.0,0.0)
+	#Mode 0 is when 'p' is pressed and the solid closed is displayed
 	if mode == 0:
-		print "Texture"
-		print is_texture
-		print new_vertex_faces
-
+		
+		#is_Texture is True when 'h' is pressed
+		#new_vertex_faces is true when the solid was opened before and 'h' was pressed
 		if (is_texture==True and new_vertex_faces):
-			#t_open_hedros(new_vertex_faces)
 			t_hedros(new_vertex_faces,faces,vertex)
-			pass
+			
 		else:
-			print 'mode'
-			print mode
+			
 			hedros(vertex,faces)
 		
-				
+	#Mode 1 is when 'l' is pressed and the solid must be opened			
 	if mode == 1:
-		print 'Texture'
-		print is_texture
-
+		
 		if is_texture==True and new_vertex_faces:
-			#codigo entra aqui
+			
 			t_open_hedros(new_vertex_faces)	
 		
 		else:
-		#glTranslatef(0.0,0.0,6.0)
-		#glTranslatef(1.0,3.0,1.0) #y=1, coloco o ponto da face zero no y=0, y=2+1, onde 2 desloca a face mais baixa (5) pro z=0 
-		#T = glGetDoublev(GL_MODELVIEW_MATRIX)
+		
 			tr_matrix = opened_cube(vertex,faces,initial_face)
 		
-			####COMECA A TRANSFORMACAO####
-			#Calcula novos vertices transformados
+			#List of new faces with transformations
 			new_vertex_faces= cp.calc_all_vertex(vertex,faces,tr_matrix)
-		
-		#Calcula Box
-		#Box is a class from geometry
-		#B = Box()
-		#for pol in new_vertex_faces:
-		#	for pt in pol.points:
-		#		B.add(pt)
-
-		#print "Box"
-		#print B.bbox
-
-		
-
-	#0 - ok
-	#1 - ok
 
 	glPopMatrix();													# // NEW: Unapply Dynamic Transform
 													# // NEW: Unapply Dynamic Transform
-
 	glFlush ();														# // Flush The GL Rendering Pipeline
 	glutSwapBuffers()
 	return
@@ -247,40 +205,47 @@ def input_keyboard(*arg):
 
 	key = arg[0]
 
+	#load cube.ply
 	if key =='c':
 		results = loader('cube.ply')
 
+	#load tetrahedron.ply
 	if key == 't':
 		results = loader('tetrahedron.ply')
 
+	#load octahedron.ply
 	if key == 'o':
 		results = loader('octahedron.ply')
-
+	
+	#load icosahedron.ply
 	if key == 'i':
 		results =loader('icosahedron.ply')
-
+	
+	#load dodecahedron.ply
 	if key == 'd':
 		results = loader('dodecahedron.ply')
 
+	#Zoom in	
 	if key == 'a':
 		zoom+=0.1
-		#print "zoom= ",zoom 
-
+	
+	#Zoom out
 	if key == 'z':
 		zoom-=0.1
-		#print "zoom= ",zoom
-
+	
+	#Close the solid
 	if key == 'p':
 		mode = 0
 
+	#Open the solid
 	if key =='l':
 		mode = 1
 
+	#Active texture
 	if key =='h':
 		is_texture = True
 
-
-
+	#Reset	
 	if key == 'r':
 		is_texture=False
 		g_LastRot = Matrix3fSetIdentity ();							# // Reset Rotation
@@ -288,36 +253,27 @@ def input_keyboard(*arg):
 		g_Transform = Matrix4fSetRotationFromMatrix3f (g_Transform, g_ThisRot);	# // Reset Rotation
 
 def getMousePos3D(x, y):
-	#global mode
-	#modelview = Matrix4fT ()
-	#projection = Matrix4fT ()
-	#viewport = Matrix4fT ()
-
-
+	
 	modelview = glGetDoublev( GL_MODELVIEW_MATRIX)
 	projection = glGetDoublev( GL_PROJECTION_MATRIX)
 	viewport = glGetIntegerv( GL_VIEWPORT)
 
 	winX = float(x)
-	#print "viewport",viewport[3]
-	#print 'y,',y
 	winY = ((viewport[3]) - (y))
-
-	#print winY
 	winZ = glReadPixels(x, int(winY),1,1,GL_DEPTH_COMPONENT,GL_FLOAT)
-	#print"winZ",winZ
+	print"win",(winX,winY,winZ)
 	
 	color = glReadPixels(x,int(winY),1,1, GL_RGBA,GL_FLOAT)
-	#print "color ",color
 	
 	teste_i = compare_color(color,colors)
-	##print 'color',color,'teste_i',teste_i
-	#gluUnProject(winX,winY,winZ, modelview, projection,viewport,posX,posY,posZ)
-	#pos = gluUnProject(winX,winY,winZ, modelview, projection,viewport)
-	##print 'pos',pos
-	#color = glReadPixels(pos[0],int(winZ),1,1, GL_RGB,GL_FLOAT)
-	#return pos
-	#mode = 1
+	
+	pos=gluUnProject(winX,winY,winZ, modelview, projection,viewport)
+	print 'pos',pos
+	
+	#object coordinates
+	posX = pos[0]
+	posY = pos[1]
+	posZ = pos[2]
 	return teste_i
 
 
@@ -330,4 +286,3 @@ def compare_color(color,colors_list):
 		return itc
 	except:
 		pass
-		#print "Not selected!"
