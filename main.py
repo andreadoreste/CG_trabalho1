@@ -167,6 +167,7 @@ def opened_cube(vertex,faces,initial_face, ang=90):
 #draw the solid with texture when is open
 def t_open_hedros(new_vertex_faces):
     #Create box and insert all points in it
+    
     B = Box()
     for pol in new_vertex_faces:
         for pt in pol.points:
@@ -175,6 +176,7 @@ def t_open_hedros(new_vertex_faces):
     #print B.bbox        
 
     for pol in new_vertex_faces:
+        
         glBegin(GL_POLYGON)
         glColor4f(1.0,1.0,1.0,1.0)
         #glColor entraria aqui
@@ -184,6 +186,9 @@ def t_open_hedros(new_vertex_faces):
             #print point
             glVertex3f(point[0],point[1],point[2])
         glEnd()
+        #glDisable(GL_TEXTURE_2D)
+        
+        #glutSwapBuffers()
 
 #draw the solid with texture
 def t_hedros(new_vertex_faces,faces,vertex):

@@ -13,7 +13,7 @@ from main import *
 from glut_loader import loader
 import cal_point as cp
 from NeHeGL import *
-from geometry import Box, Point
+from geometry import Box, Line, Point
 
 from ArcBall import * 				# ArcBallT and this tutorials set of points/vectors/matrix types
 
@@ -65,6 +65,13 @@ def Initialize (Width,	 Height):				# We call this right after our OpenGL window
 	glShadeModel (GL_FLAT);								# Select Flat Shading (Nice Definition Of Objects)
 	glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST) 	# Really Nice Perspective Calculations
 
+
+	g_quadratic = gluNewQuadric();
+	gluQuadricNormals(g_quadratic, GLU_SMOOTH);
+	gluQuadricDrawStyle(g_quadratic, GLU_FILL); 
+	# Why? this tutorial never maps any textures?! ? 
+	# gluQuadricTexture(g_quadratic, GL_TRUE);			# // Create Texture Coords
+
 	glEnable (GL_LIGHT0)
 	glEnable (GL_LIGHTING)
 
@@ -103,10 +110,43 @@ def Upon_Click (button, button_state, cursor_x, cursor_y):
 	if (button == GLUT_RIGHT_BUTTON and button_state == GLUT_UP):
 		# Right button click
 		mouse_pt = Point2fT (cursor_x, cursor_y)
+		print "cursors:",(cursor_x,cursor_y)
+		print 'mouse_pt:',mouse_pt
 		if mode==0:
+
 			mode=1
-			initial_face = getMousePos3D(mouse_pt[0],mouse_pt[1])
-			
+			pos = getMousePos3D(mouse_pt[0],mouse_pt[1])
+			#Point on screen
+			pout = [pos[0],pos[1],0]
+			print 'pout',pout
+			#Point in infinite
+			paway = [pos[0],pos[1],-1000]
+
+			pout = Matrix3fMulMatrix3f(g_ThisRot,pout)
+			print 'pout_after transform',pout
+
+			#paway = Matrix3fMulMatrix3f(g_ThisRot,paway)
+
+			pout = Point(pout[0],pout[1],pout[2])
+			paway = Point(paway[0],paway[1],paway[2])
+			print 'pout'
+			print pout
+			print 'paway'
+			print paway
+
+			line = Line(pout,paway)
+			print "Line"
+			print line
+
+			#List of faces
+			faces=results[3]
+
+			#List of vertex
+			vertex=results[2]
+
+			initial_face = getIntersections(line,faces,vertex)
+
+
 		else:
 			mode=0
 		
@@ -118,6 +158,7 @@ def Upon_Click (button, button_state, cursor_x, cursor_y):
 		g_LastRot = copy.copy (g_ThisRot);							# // Set Last Static Rotation To Last Dynamic One
 		g_isDragging = True											# // Prepare For Dragging
 		mouse_pt = Point2fT (cursor_x, cursor_y)
+		print 'mouse_pt rotation',mouse_pt
 		g_ArcBall.click (mouse_pt);								# // Update Start Vector And Prepare For Dragging
 		
 		
@@ -171,7 +212,7 @@ def Draw ():
 			t_hedros(new_vertex_faces,faces,vertex)
 			
 		else:
-			
+				
 			hedros(vertex,faces)
 		
 	#Mode 1 is when 'l' is pressed and the solid must be opened			
@@ -274,8 +315,9 @@ def getMousePos3D(x, y):
 	posX = pos[0]
 	posY = pos[1]
 	posZ = pos[2]
-	return teste_i
-
+	
+	#return teste_i
+	return pos
 
 def compare_color(color,colors_list):
 	try:
@@ -286,3 +328,35 @@ def compare_color(color,colors_list):
 		return itc
 	except:
 		pass
+
+def getIntersections(line,faces,vertex):
+	t = 'inf'
+
+	new_faces =[]
+	for face in faces:
+		fp = []
+		#f something like [0,1,2,3]
+		for v in face:
+			p = vertex[v]
+			#print 'p',p
+			#print 'v',v
+			p = Point(p[0],p[1],p[2])
+			fp.append(p)
+		f = Polygon(fp)
+		print "f"
+		print f
+		teste = line.intersectToPlane(f)
+		if teste:
+			if teste[1]<t:
+				t =teste[1]
+				initial_face = faces.index(face)
+				print 'teste'
+				print teste
+				print initial_face
+		else:
+
+			print 'there is no t'
+			print faces.index(face)
+	print 'initial_face'
+	print initial_face
+	return initial_face
