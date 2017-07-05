@@ -223,7 +223,7 @@ def Draw ():
 			t_open_hedros(new_vertex_faces)	
 		
 		else:
-			
+			#glTranslatef()	
 			tr_matrix = opened_cube(vertex,faces,initial_face)
 			
 			#List of new faces with transformations

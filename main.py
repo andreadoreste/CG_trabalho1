@@ -69,15 +69,44 @@ def opened_cube(vertex,faces,initial_face, ang=90):
     DFS_faces_vector = create_face_vector(faces,path)
     dfs_parents = DFS[1]
     
+    ###teste
+    initial_f = DFS_faces_vector[0]
+    point_f1 = vertex[initial_f[0]]
+    point_f2 = vertex[initial_f[1]]
+    point_f3 = vertex[initial_f[2]]
+    print "point_f:",(point_f1,point_f2,point_f3)
+    initial_face_normal = calc_normal(point_f1,point_f2,point_f3)
+    print initial_face_normal
+    normal_z = [0.0,0.0,1.0]
+    cross_i= cross(initial_face_normal,normal_z)
+    cross_i= cross_i.tolist()
+    print 'cross product',cross_i
+    dot_i = dot(initial_face_normal, normal_z)
+    print 'dot_product',dot_i
+
+    #Find the angle
+    angle_i = arccos(dot_i)
+    angle_i = angle_i*180/pi
+    print 'angle',angle_i
+
+    another_one = translateAndRotate(angle_i,point_f1,cross_i)
+    #glMultMatrixf(another_one)
+
+
+
     #</DFS>
 
     #Create an array with an identity matrix for each face
     faces_matrix = []
     for i in range(n_faces):
         faces_matrix.append(matrix(identity(4)))
-
+        #faces_matrix.append(another_one)
+    
+    i =faces.index(DFS_faces_vector[0])
+    faces_matrix[i] = another_one
     #Start drawing the faces
     face_i = path[0]    
+    comb = identity(4)
     for face in DFS_faces_vector:
         
         glPushMatrix()  
@@ -116,12 +145,7 @@ def opened_cube(vertex,faces,initial_face, ang=90):
 
             normal_vec_face_anterior = calc_normal(point_a1,point_b1,point_c1)
             ##print normal_vec_face_anterior
-            if f1==DFS_faces_vector[0]:
-                initial_face_normal = normal_vec_face_anterior
-                print "f1",f1
-                print 'DFS[0]',DFS_faces_vector[0]
-                print initial_face_normal
-
+            
             point_a2 = vertex[f2[0]]
             #point_a2 = Point(point_a2[0],point_a2[1],point_a2[2])
 
@@ -160,7 +184,8 @@ def opened_cube(vertex,faces,initial_face, ang=90):
             glMultMatrixf(comb.view(type=ndarray))
                     
         #desenha
-        
+        if face ==DFS_faces_vector[0]:
+            glMultMatrixf(another_one)
         glPushMatrix()
         draw(vertex,faces,face)
         
