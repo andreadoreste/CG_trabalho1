@@ -78,6 +78,8 @@ class TestContext( object ):
 		# Copy the texture data into the current texture ID
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, ix, iy, 0, GL_RGBA, GL_UNSIGNED_BYTE, image)
 
+		glGenerateMipmap(GL_TEXTURE_2D)
+
 		# Note that only the ID is returned, no reference to the image object or the 
 		# string data is stored in user space. 
 		# The data is only present within the GL after this call exits.
@@ -179,49 +181,10 @@ class TestContext( object ):
 		glTexCoord2f(0.0, 1.0); glVertex3f(-1.0,  1.0, -1.0);
 		glEnd()
 		
-		'''
-		glBegin(GL_QUADS)
-		glColor3f(1.0,0.0,0.0)
-		glTexCoord2f(0.0, 0.25); glVertex3f(-1.0, -1.0,  1.0);
-		glTexCoord2f(0.25, 0.25); glVertex3f( 1.0, -1.0,  1.0);
-		glTexCoord2f(0.25, 0.5); glVertex3f( 1.0,  1.0,  1.0);
-		glTexCoord2f(0.25, 0.0); glVertex3f(-1.0,  1.0,  1.0);
-		
-		glColor3f(0.0,1.0,0.0)
-		glTexCoord2f(0.25, 0.25); glVertex3f(-1.0, -1.0, -1.0);
-		glTexCoord2f(0.5, 0.25); glVertex3f(-1.0,  1.0, -1.0);
-		glTexCoord2f(0.5, 0.5); glVertex3f( 1.0,  1.0, -1.0);
-		glTexCoord2f(0.25, 0.5); glVertex3f( 1.0, -1.0, -1.0);
-		
-		glColor3f(0.0,0.0,1.0)
-		glTexCoord2f(0.5, 0.25); glVertex3f(-1.0,  1.0, -1.0);
-		glTexCoord2f(0.75, 0.25); glVertex3f(-1.0,  1.0,  1.0);
-		glTexCoord2f(0.75, 0.5); glVertex3f( 1.0,  1.0,  1.0);
-		glTexCoord2f(0.5, 0.5); glVertex3f( 1.0,  1.0, -1.0);
-		
-		glColor3f(1.0,1.0,0.0)
-		glTexCoord2f(1.0, 1.0); glVertex3f(-1.0, -1.0, -1.0);
-		glTexCoord2f(0.0, 1.0); glVertex3f( 1.0, -1.0, -1.0);
-		glTexCoord2f(0.0, 0.0); glVertex3f( 1.0, -1.0,  1.0);
-		glTexCoord2f(1.0, 0.0); glVertex3f(-1.0, -1.0,  1.0);
-		
-		glColor3f(0.0,1.0,1.0)
-		glTexCoord2f(0.75, 0.25); glVertex3f( 1.0, -1.0, -1.0);
-		glTexCoord2f(1.0, 0.25); glVertex3f( 1.0,  1.0, -1.0);
-		glTexCoord2f(1.0, 0.5); glVertex3f( 1.0,  1.0,  1.0);
-		glTexCoord2f(0.75, 0.5); glVertex3f( 1.0, -1.0,  1.0);
-		
-		glColor3f(1.0,0.0,1.0)
-		glTexCoord2f(0.75, 0.0); glVertex3f(-1.0, -1.0, -1.0);
-		glTexCoord2f(1.0, 0.0); glVertex3f(-1.0, -1.0,  1.0);
-		glTexCoord2f(1.0, 0.25); glVertex3f(-1.0,  1.0,  1.0);
-		glTexCoord2f(0.75, 0.25); glVertex3f(-1.0,  1.0, -1.0);
-		glEnd()
-		'''
 		
 		glDisable(GL_TEXTURE_2D)
 		
-		glutSwapBuffers()
+		#glutSwapBuffers()
 
 	def OnIdle( self ):
 		"""Request refresh of the context whenever idle"""

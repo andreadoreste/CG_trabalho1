@@ -76,7 +76,7 @@ def Initialize (Width,	 Height):				# We call this right after our OpenGL window
 	glEnable (GL_LIGHTING)
 
 	glEnable (GL_COLOR_MATERIAL)
-
+	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE)
 	gl_context = tmap.TestContext()
 
 	return True
@@ -223,9 +223,9 @@ def Draw ():
 			t_open_hedros(new_vertex_faces)	
 		
 		else:
-		
+			
 			tr_matrix = opened_cube(vertex,faces,initial_face)
-		
+			
 			#List of new faces with transformations
 			new_vertex_faces= cp.calc_all_vertex(vertex,faces,tr_matrix)
 

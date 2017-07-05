@@ -22,3 +22,15 @@ Zoom:
 a - zoom in
 z - zoom out
 
+h - Ativa Textura
+r - reseta
+
+Instruções:
+Em ordem de ativar a textura:
+
+1. Apertar 'r' para resetar os parâmetros
+2. Sólido aberto, para pegar as coordenadas
+3. Apertar 'h', textura será ativada
+
+
+

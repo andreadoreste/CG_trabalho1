@@ -116,6 +116,11 @@ def opened_cube(vertex,faces,initial_face, ang=90):
 
             normal_vec_face_anterior = calc_normal(point_a1,point_b1,point_c1)
             ##print normal_vec_face_anterior
+            if f1==DFS_faces_vector[0]:
+                initial_face_normal = normal_vec_face_anterior
+                print "f1",f1
+                print 'DFS[0]',DFS_faces_vector[0]
+                print initial_face_normal
 
             point_a2 = vertex[f2[0]]
             #point_a2 = Point(point_a2[0],point_a2[1],point_a2[2])
@@ -221,6 +226,8 @@ def t_hedros(new_vertex_faces,faces,vertex):
             #print point
             glVertex3fv(vertex[vert])
         glEnd()
+    #glDisable(GL_TEXTURE_2D)
+    #glutSwapBuffers()
 
 
 
